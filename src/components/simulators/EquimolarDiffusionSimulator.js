@@ -28,15 +28,23 @@ const EquimolarDiffusionSimulator = () => {
         concentration = concentrationA0 - (x / systemLength) * (concentrationA0 - concentrationAL);
       } else if (geometry === 'cylindrical') {
         // Logarithmic profile for cylindrical diffusion
-        const r = x + 0.001; // Add small offset to avoid ln(0)
+        const r = x;
         const R = systemLength;
-        concentration = concentrationA0 - (concentrationA0 - concentrationAL) * (Math.log(r) / Math.log(R));
-      } else { // spherical
-        // 1/r profile for spherical diffusion
-        const r = x + 0.001; // Add small offset to avoid division by zero
-        const R = systemLength;
-        concentration = concentrationAL + (concentrationA0 - concentrationAL) * (R / r) * ((R - r) / (R - 0.001));
-      }
+        // Prevent division by zero or log(0)
+        if (r < 0.0001) {
+          concentration = concentrationA0;
+        } else {
+          // Correct formula for cylindrical geometry
+          concentration = concentrationA0 - (concentrationA0 - concentrationAL) * (Math.log(r/0.0001) / Math.log(R/0.0001));
+        }
+      } 
+      // else { // spherical
+      //   // 1/r profile for spherical diffusion
+      //   const r = x + 0.001; // Add small offset to avoid division by zero
+      //   const R = systemLength;
+  
+      //   concentration = concentrationAL + (concentrationA0 - concentrationAL) * (1 - r/R);
+      // }
       
       profile.push({
         position: x,
@@ -82,7 +90,7 @@ const EquimolarDiffusionSimulator = () => {
     const svg = d3.select(visualizationRef.current);
     const width = 600;
     const height = 400;
-    const margin = { top: 40, right: 40, bottom: 60, left: 60 };
+    const margin = { top: 40, right: 40, bottom: 60, left: 90 };
     
     // Clear previous visualization
     svg.selectAll("*").remove();
@@ -124,7 +132,7 @@ const EquimolarDiffusionSimulator = () => {
       .attr("text-anchor", "middle")
       .attr("transform", "rotate(-90)")
       .attr("x", -height / 2)
-      .attr("y", 15)
+      .attr("y", 15 )
       .text("Concentration (mol/L)");
     
     // Add title
@@ -195,6 +203,55 @@ const EquimolarDiffusionSimulator = () => {
       .attr("x", 10)
       .attr("y", 24)
       .text("Species B");
+      
+    let tooltip = d3.select("body").select(".tooltip");
+    if (tooltip.empty()) {
+      tooltip = d3.select("body").append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0)
+      .style("position", "absolute")
+      .style("background-color", "white")
+      .style("border", "1px solid #ddd")
+      .style("border-radius", "4px")
+      .style("padding", "8px")
+      .style("pointer-events", "none")
+      .style("font-size", "12px")
+      .style("box-shadow", "0 2px 4px rgba(0,0,0,0.1)");
+    }
+
+    // Add a transparent overlay for mouse tracking
+    const overlay = svg.append("rect")
+      .attr("class", "overlay")
+      .attr("x", margin.left)
+      .attr("y", margin.top)
+      .attr("width", width - margin.left - margin.right)
+      .attr("height", height - margin.top - margin.bottom)
+      .style("fill", "none")
+      .style("pointer-events", "all");
+
+    // Add mousemove event to show tooltip
+    overlay.on("mousemove", function(event) {
+      const [mouseX, mouseY] = d3.pointer(event);
+      
+      // Convert mouse position to data values
+      const xValue = xScale.invert(mouseX);
+      const yValue = yScale.invert(mouseY);
+      
+      // Show tooltip with the values
+      tooltip.transition()
+        .duration(200)
+        .style("opacity", 0.9);
+      
+      tooltip.html(`Position: ${(xValue * 100).toFixed(2)} cm<br/>Concentration: ${yValue.toFixed(3)} mol/L`)
+        .style("left", (event.pageX + 10) + "px")
+        .style("top", (event.pageY - 28) + "px");
+    })
+    .on("mouseout", function() {
+      tooltip.transition()
+        .duration(500)
+        .style("opacity", 0);
+    });
+
   };
   
   // Format number with correct scientific notation
@@ -273,25 +330,42 @@ const EquimolarDiffusionSimulator = () => {
           
           <div className="parameter">
             <label>Geometry:</label>
-            <select 
-              value={geometry}
-              onChange={(e) => setGeometry(e.target.value)}
-            >
-              <option value="planar">Planar</option>
-              <option value="cylindrical">Cylindrical</option>
-              <option value="spherical">Spherical</option>
-            </select>
+            <div className="custom-dropdown">
+              <select 
+                value={geometry}
+                onChange={(e) => setGeometry(e.target.value)}
+              >
+                <option value="planar">Planar</option>
+                <option value="cylindrical">Cylindrical</option>
+                {/* <option value="spherical">Spherical</option> */}
+              </select>
+              <div className="geometry-icon">
+                {geometry === 'planar' && <div className="icon-planar"></div>}
+                {geometry === 'cylindrical' && <div className="icon-cylindrical"></div>}
+              </div>
+            </div>
           </div>
           
           <div className="calculated-values">
             <h4>Calculated Values:</h4>
-            <p>
-              <strong>Flux at x=0:</strong> {formatScientific(Math.abs(diffusivity * (concentrationA0 - concentrationAL) / systemLength))} mol/m²·s
-            </p>
-            <p>
-              <strong>Average Concentration:</strong> {((concentrationA0 + concentrationAL) / 2).toFixed(2)} mol/L
-            </p>
+            <div className="result-card">
+              <div className="result-icon flux-icon"></div>
+              <div className="result-content">
+                <div className="result-label">Flux at x=0:</div>
+                <div className="result-value">{formatScientific(Math.abs(diffusivity * (concentrationA0 - concentrationAL) / systemLength))} mol/m²·s</div>
+              </div>
+            </div>
+            
+            <div className="result-card">
+              <div className="result-icon concentration-icon"></div>
+              <div className="result-content">
+                <div className="result-label">Average Concentration:</div>
+                <div className="result-value">{((concentrationA0 + concentrationAL) / 2).toFixed(2)} mol/L</div>
+              </div>
+            </div>
           </div>
+
+
         </div>
         
         <div className="visualization-panel">
@@ -303,8 +377,8 @@ const EquimolarDiffusionSimulator = () => {
               In equimolar counter diffusion, the molar fluxes of A and B are equal in magnitude but opposite in direction.
             </p>
             <p>
-              For planar geometry, the concentration profile is linear. For cylindrical and spherical geometries,
-              the profiles follow logarithmic and inverse-r relationships, respectively.
+              For planar geometry, the concentration profile is linear while for cylindrical geometry {/*and spherical geometries,*/}
+              the profiles follow logarithmic {/*and inverse-r */}relationship. {/*, respectively. */}
             </p>
           </div>
         </div>
