@@ -1,0 +1,57 @@
+.simulator-intro {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .simulator-intro h1 {
+    color: #333;
+    border-bottom: 2px solid #4facfe;
+    padding-bottom: 15px;
+    margin-bottom: 30px;
+  }
+  
+  .intro-content {
+    line-height: 1.6;
+    font-size: 1.1rem;
+  }
+  
+  .intro-content ul {
+    margin: 20px 0;
+    padding-left: 25px;
+  }
+  
+  .intro-content li {
+    margin-bottom: 10px;
+  }
+  
+  .equation {
+    text-align: center;
+    font-size: 1.2rem;
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #f5f7fa;
+    border-radius: 5px;
+  }
+  
+  .start-simulation {
+    margin-top: 40px;
+    text-align: center;
+  }
+  
+  .simulation-button {
+    display: inline-block;
+    padding: 12px 30px;
+    background: linear-gradient(45deg, #4facfe, #00f2fe);
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+    transition: all 0.3s;
+  }
+  
+  .simulation-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4);
+  }
