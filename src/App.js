@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import HomePage from './components/HomePage';
 import SimulatorIntro from './components/SimulatorIntro';
 import EquimolarDiffusionSimulator from './components/simulators/EquimolarDiffusionSimulator';
+import DistillationColumnSimulator from './components/simulators/DistillationColumnSimulator';
 import './App.css';
 
 // Data for the simulators
@@ -19,6 +20,12 @@ const simulators = [
     title: 'Diffusion in Stagnant Film',
     description: 'Simulation of diffusion through a stationary medium.',
     path: '/simulators/stagnant-film'
+  },
+  {
+    id: 'distillation-column',
+    title: 'Distillation Column Stages',
+    description: 'Calculate the number of stages in a distillation column using McCabe-Thiele method.',
+    path: '/simulators/distillation-column'
   },
   // Other simulators would be added here
 ];
@@ -41,6 +48,17 @@ function App() {
             <Route 
               path="/simulators/equimolar-diffusion/simulate" 
               element={<EquimolarDiffusionSimulator />} 
+            />
+            <Route 
+              path="/simulators/distillation-column" 
+              element={<SimulatorIntro 
+                simulator={simulators[2]} 
+                simulatorPath="/simulators/distillation-column/simulate"
+              />} 
+            />
+            <Route 
+              path="/simulators/distillation-column/simulate" 
+              element={<DistillationColumnSimulator />} 
             />
             {/* Other routes would be added here */}
           </Routes>

@@ -41,7 +41,7 @@ const EquimolarDiffusionSimulator = () => {
       // else { // spherical
       //   // 1/r profile for spherical diffusion
       //   const r = x + 0.001; // Add small offset to avoid division by zero
-      //   const R = systemLength;
+      //   const R = systemLength ;
   
       //   concentration = concentrationAL + (concentrationA0 - concentrationAL) * (1 - r/R);
       // }
