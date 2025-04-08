@@ -98,7 +98,6 @@ function Footer() {
           <img src="/IITK_logo.png" alt="IITK's Logo" height="40" />
         </div>
         <div className="footer-text">
-          <p>Shantanu</p>
           <p>CHE213 - Mass Transfer</p>
         </div>
       </div>
