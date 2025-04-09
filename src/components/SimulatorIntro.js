@@ -91,6 +91,76 @@ const SimulatorIntro = ({ simulator, simulatorPath }) => {
           </p>
         </>
       );
+    } else if (id === 'stagnant-film') {
+      return (
+        <>
+          <p>
+            The Stagnant Film Diffusion Simulator models mass transfer across a stagnant fluid film, a fundamental concept in chemical engineering. This simulation demonstrates how species diffuse through a stationary fluid layer, which is a common scenario in many industrial processes.
+          </p>
+          <p>
+            <strong>Key Parameters:</strong>
+          </p>
+          <ul>
+            <li><strong>Film Thickness (δ):</strong> Distance across which diffusion occurs</li>
+            <li><strong>Diffusion Coefficient (D<sub>AB</sub>):</strong> Molecular diffusivity of species A in medium B</li>
+            <li><strong>Concentration Difference (ΔC):</strong> Driving force for diffusion</li>
+            <li><strong>Mass Transfer Coefficient (k):</strong> Overall rate of mass transfer</li>
+          </ul>
+          <p>
+            The simulation visualizes:
+          </p>
+          <ul>
+            <li>Concentration profile across the film</li>
+            <li>Mass transfer flux</li>
+            <li>Effect of film thickness on transfer rate</li>
+            <li>Impact of diffusion coefficient</li>
+          </ul>
+          <p>
+            This simulation helps understand:
+          </p>
+          <ul>
+            <li>Film theory of mass transfer</li>
+            <li>Concentration boundary layers</li>
+            <li>Mass transfer resistance</li>
+            <li>Design of mass transfer equipment</li>
+          </ul>
+        </>
+      );
+    } else if (id === 'distillation-column') {
+      return (
+        <>
+          <p>
+            The Distillation Column Simulator models the separation of liquid mixtures through vapor-liquid equilibrium. This fundamental unit operation is widely used in chemical processing for purification and separation of components.
+          </p>
+          <p>
+            <strong>Key Parameters:</strong>
+          </p>
+          <ul>
+            <li><strong>Number of Stages:</strong> Theoretical equilibrium stages</li>
+            <li><strong>Reflux Ratio:</strong> Ratio of liquid returned to column vs. product withdrawn</li>
+            <li><strong>Feed Stage Location:</strong> Position where feed enters the column</li>
+            <li><strong>Component Properties:</strong> Relative volatility, boiling points</li>
+          </ul>
+          <p>
+            The simulation visualizes:
+          </p>
+          <ul>
+            <li>Temperature and composition profiles</li>
+            <li>Stage-by-stage separation</li>
+            <li>Effect of operating parameters</li>
+            <li>Product purity relationships</li>
+          </ul>
+          <p>
+            This simulation helps understand:
+          </p>
+          <ul>
+            <li>Vapor-liquid equilibrium</li>
+            <li>McCabe-Thiele method</li>
+            <li>Column design principles</li>
+            <li>Operating parameter effects</li>
+          </ul>
+        </>
+      );
     }
     // Add cases for other simulators here
     return <p>Information about this simulator will be added soon.</p>;

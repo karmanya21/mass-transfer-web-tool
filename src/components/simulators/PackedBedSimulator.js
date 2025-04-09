@@ -27,7 +27,7 @@ const PackedBedSimulator = () => {
     const superficialVelocity = flowRate / crossSectionalArea;
     
     // Calculate Peclet number (Pe = u*L/D)
-    const pe = superficialVelocity * bedLength / diffusivity;
+    // const pe = superficialVelocity * bedLength / diffusivity;
     
     // Calculate Damköhler number (Da = k*L/u)
     const da = reactionRate * bedLength / superficialVelocity;
@@ -320,8 +320,21 @@ const PackedBedSimulator = () => {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, [bedLength, bedDiameter, particleDiameter, voidFraction, 
-      inletConcentration, flowRate, diffusivity, reactionRate, activeTab]);
+  }, [
+    bedLength, 
+    bedDiameter, 
+    particleDiameter, 
+    voidFraction, 
+    inletConcentration, 
+    flowRate, 
+    diffusivity, 
+    reactionRate, 
+    activeTab,
+    calculateConcentrationProfile,
+    calculateBreakthroughCurve,
+    createProfileVisualization,
+    createBreakthroughVisualization
+  ]);
   
   // Format scientific notation for display
   const formatScientific = (value) => {

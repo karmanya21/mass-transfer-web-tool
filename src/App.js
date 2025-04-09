@@ -6,6 +6,7 @@ import SimulatorIntro from './components/SimulatorIntro';
 import EquimolarDiffusionSimulator from './components/simulators/EquimolarDiffusionSimulator';
 import DistillationColumnSimulator from './components/simulators/DistillationColumnSimulator';
 import PackedBedSimulator from './components/simulators/PackedBedSimulator';
+import StagnantFilmDiffusion from './components/simulators/StagnantFilmDiffusion';
 import './App.css';
 
 // Data for the simulators
@@ -55,6 +56,17 @@ function App() {
             <Route 
               path="/simulators/equimolar-diffusion/simulate" 
               element={<EquimolarDiffusionSimulator />} 
+            />
+            <Route 
+              path="/simulators/stagnant-film" 
+              element={<SimulatorIntro 
+                simulator={simulators[1]} 
+                simulatorPath="/simulators/stagnant-film/simulate"
+              />} 
+            />
+            <Route 
+              path="/simulators/stagnant-film/simulate" 
+              element={<StagnantFilmDiffusion />} 
             />
             <Route 
               path="/simulators/distillation-column" 
