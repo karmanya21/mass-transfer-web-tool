@@ -42,19 +42,16 @@ const DistillationColumnSimulator2 = () => {
       return;
     }
 
-    // Check if feed point lies above equilibrium curve
+    // Check if feed point and product point are both above or both below equilibrium curve
     const yInEquilibrium = equilibriumSlope * xIn;
-    if (yIn <= yInEquilibrium) {
-      setError("Feed point must lie above the equilibrium curve");
-      setStages(0);
-      setStagePoints([]);
-      return;
-    }
-
-    // Check if product point lies above equilibrium curve
     const yOutEquilibrium = equilibriumSlope * xOut;
-    if (yOut <= yOutEquilibrium) {
-      setError("Product point must lie above the equilibrium curve");
+    
+    // Determine if we're doing absorption (both points above equilibrium) or stripping (both points below equilibrium)
+    const isAbsorption = yIn > yInEquilibrium && yOut > yOutEquilibrium;
+    const isStripping = yIn < yInEquilibrium && yOut < yOutEquilibrium;
+    
+    if (!isAbsorption && !isStripping) {
+      setError("Both feed and product points must be either above or below the equilibrium curve");
       setStages(0);
       setStagePoints([]);
       return;
@@ -63,7 +60,7 @@ const DistillationColumnSimulator2 = () => {
     // Calculate y-intercept of operating line
     const operatingLineIntercept = yOut - operatingLineSlope * xOut;
 
-    // Start at (xIn, yIn) and work upwards
+    // Start at (xIn, yIn) and work towards (xOut, yOut)
     let currentX = xIn;
     let currentY = yIn;
     let stageCount = 0;
@@ -74,18 +71,33 @@ const DistillationColumnSimulator2 = () => {
       // Current point on operating line
       points.push({ x: currentX, y: currentY, type: "operating" });
 
-      // Move horizontally to equilibrium curve (y = equilibriumSlope * x)
-      // Find x where y = currentY on equilibrium curve
-      // So x = currentY / equilibriumSlope
-      const equilibriumX = currentY / equilibriumSlope;
-      points.push({ x: equilibriumX, y: currentY, type: "horizontal" });
+      if (isAbsorption) {
+        // For absorption (gas to liquid): Move horizontally to equilibrium curve
+        // Find x where y = currentY on equilibrium curve
+        // So x = currentY / equilibriumSlope
+        const equilibriumX = currentY / equilibriumSlope;
+        points.push({ x: equilibriumX, y: currentY, type: "horizontal" });
 
-      // Now on the equilibrium curve, move vertically to operating line
-      currentX = equilibriumX;
-      
-      // Find y on operating line at this x
-      currentY = operatingLineSlope * currentX + operatingLineIntercept;
-      points.push({ x: currentX, y: currentY, type: "vertical" });
+        // Now on the equilibrium curve, move vertically to operating line
+        currentX = equilibriumX;
+        
+        // Find y on operating line at this x
+        currentY = operatingLineSlope * currentX + operatingLineIntercept;
+        points.push({ x: currentX, y: currentY, type: "vertical" });
+      } else {
+        // For stripping (liquid to gas): Move vertically to equilibrium curve
+        // Find y where x = currentX on equilibrium curve
+        // So y = equilibriumSlope * currentX
+        const equilibriumY = equilibriumSlope * currentX;
+        points.push({ x: currentX, y: equilibriumY, type: "vertical" });
+
+        // Now on the equilibrium curve, move horizontally to operating line
+        // Find x where y = equilibriumY on operating line
+        // So x = (equilibriumY - operatingLineIntercept) / operatingLineSlope
+        currentX = (equilibriumY - operatingLineIntercept) / operatingLineSlope;
+        currentY = equilibriumY;
+        points.push({ x: currentX, y: currentY, type: "horizontal" });
+      }
 
       stageCount++;
       
@@ -308,44 +320,6 @@ const DistillationColumnSimulator2 = () => {
           .attr("y2", yScale(next.y))
           .attr("stroke", next.type === "horizontal" ? "green" : next.type === "vertical" ? "purple" : "blue")
           .attr("stroke-width", 2);
-      }
-      
-      // Add stage numbers at midpoints of vertical lines with better visibility
-      let stageNum = 1;
-      for (let i = 1; i < validPoints.length - 1; i += 3) {
-        if (i + 1 < validPoints.length) {
-          const current = validPoints[i];
-          const next = validPoints[i + 1];
-          
-          // Only show stage numbers for the vertical lines
-          if (current.type === "vertical" && next.type === "horizontal") {
-            const midX = (current.x + next.x) / 2;
-            const midY = (current.y + next.y) / 2;
-            
-            // Add a white background for better readability
-            const bgWidth = Math.max(20, Math.min(30, width * 0.05));
-            const bgHeight = Math.max(15, Math.min(25, height * 0.04));
-            
-            svg.append("rect")
-              .attr("x", xScale(midX) - bgWidth/2)
-              .attr("y", yScale(midY) - bgHeight/2)
-              .attr("width", bgWidth)
-              .attr("height", bgHeight)
-              .attr("fill", "white")
-              .attr("opacity", 0.7);
-              
-            svg.append("text")
-              .attr("x", xScale(midX))
-              .attr("y", yScale(midY) + axisFontSize/3)
-              .attr("text-anchor", "middle")
-              .style("font-size", `${axisFontSize}px`)
-              .attr("font-weight", "bold")
-              .attr("fill", "green")
-              .text(stageNum);
-            
-            stageNum++;
-          }
-        }
       }
     }
 
