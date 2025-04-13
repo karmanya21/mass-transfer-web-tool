@@ -5,6 +5,7 @@ import HomePage from './components/HomePage';
 import SimulatorIntro from './components/SimulatorIntro';
 import EquimolarDiffusionSimulator from './components/simulators/EquimolarDiffusionSimulator';
 import DistillationColumnSimulator from './components/simulators/DistillationColumnSimulator';
+import DistillationColumnSimulator2 from './components/simulators/DistillationColumnSimulator2';
 import PackedBedSimulator from './components/simulators/PackedBedSimulator';
 import StagnantFilmDiffusion from './components/simulators/StagnantFilmDiffusion';
 import './App.css';
@@ -28,6 +29,12 @@ const simulators = [
     title: 'Distillation Column Stages',
     description: 'Calculate the number of stages in a distillation column using McCabe-Thiele method.',
     path: '/simulators/distillation-column'
+  },
+  {
+    id: 'distillation-column-2',
+    title: 'McCabe-Thiele Method Simulator',
+    description: 'Interactive visualization of the McCabe-Thiele method for distillation column design.',
+    path: '/simulators/distillation-column-2'
   },
   {
     id: 'packed-bed',
@@ -80,9 +87,20 @@ function App() {
               element={<DistillationColumnSimulator />} 
             />
             <Route 
-              path="/simulators/packed-bed" 
+              path="/simulators/distillation-column-2" 
               element={<SimulatorIntro 
                 simulator={simulators[3]} 
+                simulatorPath="/simulators/distillation-column-2/simulate"
+              />} 
+            />
+            <Route 
+              path="/simulators/distillation-column-2/simulate" 
+              element={<DistillationColumnSimulator2 />} 
+            />
+            <Route 
+              path="/simulators/packed-bed" 
+              element={<SimulatorIntro 
+                simulator={simulators[4]} 
                 simulatorPath="/simulators/packed-bed/simulate"
               />} 
             />
