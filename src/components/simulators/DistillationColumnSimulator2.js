@@ -4,12 +4,12 @@ import './DistillationColumnSimulator2.css';
 
 const DistillationColumnSimulator2 = () => {
   // State variables for simulation parameters
-  const [equilibriumSlope, setEquilibriumSlope] = useState(1.5);
-  const [Ls, setLs] = useState(100); // Liquid flow rate
-  const [Gs, setGs] = useState(80); // Gas flow rate
-  const [xIn, setXIn] = useState(0.05); // Input liquid concentration
-  const [yIn, setYIn] = useState(0.01); // Input gas concentration
-  const [xOut, setXOut] = useState(0.4); // Output liquid concentration
+  const [equilibriumSlope, setEquilibriumSlope] = useState(2.5);
+  const [Ls, setLs] = useState(170); // Liquid flow rate
+  const [Gs, setGs] = useState(70); // Gas flow rate
+  const [xIn, setXIn] = useState(0.06); // Input liquid concentration
+  const [yIn, setYIn] = useState(0.27); // Input gas concentration
+  const [xOut, setXOut] = useState(0.46); // Output liquid concentration
   const [yOut, setYOut] = useState(0); // Calculated output gas concentration
   const [stages, setStages] = useState(0); // Number of stages
   const [stagePoints, setStagePoints] = useState([]); // Points for stages visualization
@@ -70,7 +70,7 @@ const DistillationColumnSimulator2 = () => {
     const points = [];
 
     // Create points for drawing stages
-    while (currentX < xOut && stageCount < 50) { // Limit to 50 stages to prevent infinite loops
+    while (currentX < xOut) {
       // Current point on operating line
       points.push({ x: currentX, y: currentY, type: "operating" });
 
@@ -101,7 +101,7 @@ const DistillationColumnSimulator2 = () => {
       }
       
       // Break the loop if we're not making progress
-      if (points.length > 100) break; 
+      if (points.length > 1000) break; 
     }
 
     setStages(stageCount);
