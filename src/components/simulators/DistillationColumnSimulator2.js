@@ -204,22 +204,26 @@ const DistillationColumnSimulator2 = () => {
       )
       .attr("stroke-opacity", 0.1);
 
-    // Draw 45-degree line
+    // Draw 45-degree line (only above x-axis)
+    const x45Max = Math.min(maxX, 1); // Limit to x=1 to ensure y stays positive
     svg.append("line")
       .attr("x1", 0)
       .attr("y1", height)
-      .attr("x2", xScale(maxX))
-      .attr("y2", yScale(maxX))
+      .attr("x2", xScale(x45Max))
+      .attr("y2", yScale(x45Max))
       .attr("stroke", "#ccc")
       .attr("stroke-dasharray", "5,5");
 
-    // Draw equilibrium line if enabled
+    // Draw equilibrium line if enabled (only above x-axis)
     if (showEquilibriumLine) {
+      // Find the x value where y becomes negative
+      const xEquilibriumMax = maxX;
+      
       svg.append("line")
         .attr("x1", 0)
         .attr("y1", height)
-        .attr("x2", xScale(maxX))
-        .attr("y2", yScale(equilibriumSlope * maxX))
+        .attr("x2", xScale(xEquilibriumMax))
+        .attr("y2", yScale(equilibriumSlope * xEquilibriumMax))
         .attr("stroke", "red")
         .attr("stroke-width", 2);
     }
@@ -228,11 +232,27 @@ const DistillationColumnSimulator2 = () => {
     if (showOperatingLine) {
       const operatingLineIntercept = yOut - operatingLineSlope * xOut;
       
+      // Calculate where the operating line crosses the x-axis (y = 0)
+      // For y = mx + b, when y = 0, x = -b/m
+      let xIntercept = 0;
+      if (operatingLineSlope !== 0) {
+        xIntercept = -operatingLineIntercept / operatingLineSlope;
+      }
+      
+      // Determine the starting point for the line
+      // If the line crosses the x-axis at a positive x value, start from there
+      // Otherwise, start from x = 0
+      const xStart = (xIntercept > 0) ? xIntercept : 0;
+      
+      // Always plot to the maximum x value
+      const xEnd = maxX;
+      
+      // Draw the operating line
       svg.append("line")
-        .attr("x1", xScale(0))
-        .attr("y1", yScale(operatingLineIntercept))
-        .attr("x2", xScale(maxX))
-        .attr("y2", yScale(operatingLineSlope * maxX + operatingLineIntercept))
+        .attr("x1", xScale(xStart))
+        .attr("y1", yScale(operatingLineSlope * xStart + operatingLineIntercept))
+        .attr("x2", xScale(xEnd))
+        .attr("y2", yScale(operatingLineSlope * xEnd + operatingLineIntercept))
         .attr("stroke", "blue")
         .attr("stroke-width", 2);
     }
@@ -241,36 +261,45 @@ const DistillationColumnSimulator2 = () => {
     const pointRadius = Math.max(3, Math.min(5, width * 0.01));
     const labelOffset = Math.max(8, Math.min(12, width * 0.02));
     
-    svg.append("circle")
-      .attr("cx", xScale(xIn))
-      .attr("cy", yScale(yIn))
-      .attr("r", pointRadius)
-      .attr("fill", "green");
+    // Only draw feed point if yIn is positive
+    if (yIn >= 0) {
+      svg.append("circle")
+        .attr("cx", xScale(xIn))
+        .attr("cy", yScale(yIn))
+        .attr("r", pointRadius)
+        .attr("fill", "green");
 
-    svg.append("text")
-      .attr("x", xScale(xIn) + labelOffset)
-      .attr("y", yScale(yIn) - labelOffset)
-      .text("Feed")
-      .style("font-size", `${axisFontSize}px`);
+      svg.append("text")
+        .attr("x", xScale(xIn) + labelOffset)
+        .attr("y", yScale(yIn) - labelOffset)
+        .text("Feed")
+        .style("font-size", `${axisFontSize}px`);
+    }
 
-    svg.append("circle")
-      .attr("cx", xScale(xOut))
-      .attr("cy", yScale(yOut))
-      .attr("r", pointRadius)
-      .attr("fill", "blue");
+    // Only draw product point if yOut is positive
+    if (yOut >= 0) {
+      svg.append("circle")
+        .attr("cx", xScale(xOut))
+        .attr("cy", yScale(yOut))
+        .attr("r", pointRadius)
+        .attr("fill", "blue");
 
-    svg.append("text")
-      .attr("x", xScale(xOut) + labelOffset)
-      .attr("y", yScale(yOut) - labelOffset)
-      .text("Product")
-      .style("font-size", `${axisFontSize}px`);
+      svg.append("text")
+        .attr("x", xScale(xOut) + labelOffset)
+        .attr("y", yScale(yOut) - labelOffset)
+        .text("Product")
+        .style("font-size", `${axisFontSize}px`);
+    }
 
     // Draw stages if enabled
     if (showStages && stages > 0 && stagePoints.length > 0) {
+      // Filter out points where y is negative
+      const validPoints = stagePoints.filter(point => point.y >= 0);
+      
       // Draw stage steps with different colors for horizontal and vertical lines
-      for (let i = 0; i < stagePoints.length - 1; i++) {
-        const current = stagePoints[i];
-        const next = stagePoints[i + 1];
+      for (let i = 0; i < validPoints.length - 1; i++) {
+        const current = validPoints[i];
+        const next = validPoints[i + 1];
         
         svg.append("line")
           .attr("x1", xScale(current.x))
@@ -283,10 +312,10 @@ const DistillationColumnSimulator2 = () => {
       
       // Add stage numbers at midpoints of vertical lines with better visibility
       let stageNum = 1;
-      for (let i = 1; i < stagePoints.length - 1; i += 3) {
-        if (i + 1 < stagePoints.length) {
-          const current = stagePoints[i];
-          const next = stagePoints[i + 1];
+      for (let i = 1; i < validPoints.length - 1; i += 3) {
+        if (i + 1 < validPoints.length) {
+          const current = validPoints[i];
+          const next = validPoints[i + 1];
           
           // Only show stage numbers for the vertical lines
           if (current.type === "vertical" && next.type === "horizontal") {
