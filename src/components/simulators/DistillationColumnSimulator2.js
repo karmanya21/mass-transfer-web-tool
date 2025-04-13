@@ -115,16 +115,29 @@ const DistillationColumnSimulator2 = () => {
     // Clear previous SVG
     d3.select(visualizationRef.current).selectAll("*").remove();
 
-    // Set up dimensions - increased size for better visibility
-    const margin = { top: 40, right: 60, bottom: 70, left: 70 };
-    const width = 600 - margin.left - margin.right;
-    const height = 600 - margin.top - margin.bottom;
+    // Get container dimensions
+    const container = visualizationRef.current;
+    const containerWidth = container.clientWidth;
+    const containerHeight = container.clientHeight;
 
-    // Create SVG
+    // Set up dimensions with responsive margins
+    const margin = { 
+      top: Math.max(30, containerHeight * 0.05), 
+      right: Math.max(40, containerWidth * 0.05), 
+      bottom: Math.max(50, containerHeight * 0.1), 
+      left: Math.max(50, containerWidth * 0.1) 
+    };
+    
+    const width = containerWidth - margin.left - margin.right;
+    const height = containerHeight - margin.top - margin.bottom;
+
+    // Create SVG with responsive dimensions
     const svg = d3.select(visualizationRef.current)
       .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
+      .attr("width", "100%")
+      .attr("height", "100%")
+      .attr("viewBox", `0 0 ${containerWidth} ${containerHeight}`)
+      .attr("preserveAspectRatio", "xMidYMid meet")
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
@@ -141,29 +154,37 @@ const DistillationColumnSimulator2 = () => {
       .domain([0, maxY])
       .range([height, 0]);
 
-    // Add X and Y axes
+    // Add X and Y axes with responsive font sizes
+    const axisFontSize = Math.max(10, Math.min(14, width * 0.02));
+    
     svg.append("g")
       .attr("transform", `translate(0,${height})`)
-      .call(d3.axisBottom(xScale));
+      .call(d3.axisBottom(xScale))
+      .selectAll("text")
+      .style("font-size", `${axisFontSize}px`);
 
     svg.append("g")
-      .call(d3.axisLeft(yScale));
+      .call(d3.axisLeft(yScale))
+      .selectAll("text")
+      .style("font-size", `${axisFontSize}px`);
 
-    // Add axis labels
+    // Add axis labels with responsive font sizes
+    const labelFontSize = Math.max(12, Math.min(16, width * 0.025));
+    
     svg.append("text")
       .attr("text-anchor", "middle")
       .attr("x", width / 2)
-      .attr("y", height + margin.bottom - 20)
+      .attr("y", height + margin.bottom - 10)
       .text("x (Liquid Phase Concentration)")
-      .attr("font-size", "14px");
+      .style("font-size", `${labelFontSize}px`);
 
     svg.append("text")
       .attr("text-anchor", "middle")
       .attr("transform", "rotate(-90)")
       .attr("x", -height / 2)
-      .attr("y", -margin.left + 20)
+      .attr("y", -margin.left + 15)
       .text("y (Vapor Phase Concentration)")
-      .attr("font-size", "14px");
+      .style("font-size", `${labelFontSize}px`);
 
     // Add grid lines
     svg.append("g")
@@ -216,30 +237,33 @@ const DistillationColumnSimulator2 = () => {
         .attr("stroke-width", 2);
     }
 
-    // Draw feed and product points
+    // Draw feed and product points with responsive sizes
+    const pointRadius = Math.max(3, Math.min(5, width * 0.01));
+    const labelOffset = Math.max(8, Math.min(12, width * 0.02));
+    
     svg.append("circle")
       .attr("cx", xScale(xIn))
       .attr("cy", yScale(yIn))
-      .attr("r", 5)
+      .attr("r", pointRadius)
       .attr("fill", "green");
 
     svg.append("text")
-      .attr("x", xScale(xIn) + 10)
-      .attr("y", yScale(yIn) - 10)
+      .attr("x", xScale(xIn) + labelOffset)
+      .attr("y", yScale(yIn) - labelOffset)
       .text("Feed")
-      .attr("font-size", "12px");
+      .style("font-size", `${axisFontSize}px`);
 
     svg.append("circle")
       .attr("cx", xScale(xOut))
       .attr("cy", yScale(yOut))
-      .attr("r", 5)
+      .attr("r", pointRadius)
       .attr("fill", "blue");
 
     svg.append("text")
-      .attr("x", xScale(xOut) + 10)
-      .attr("y", yScale(yOut) - 10)
+      .attr("x", xScale(xOut) + labelOffset)
+      .attr("y", yScale(yOut) - labelOffset)
       .text("Product")
-      .attr("font-size", "12px");
+      .style("font-size", `${axisFontSize}px`);
 
     // Draw stages if enabled
     if (showStages && stages > 0 && stagePoints.length > 0) {
@@ -270,19 +294,22 @@ const DistillationColumnSimulator2 = () => {
             const midY = (current.y + next.y) / 2;
             
             // Add a white background for better readability
+            const bgWidth = Math.max(20, Math.min(30, width * 0.05));
+            const bgHeight = Math.max(15, Math.min(25, height * 0.04));
+            
             svg.append("rect")
-              .attr("x", xScale(midX) - 5)
-              .attr("y", yScale(midY) - 15)
-              .attr("width", 25)
-              .attr("height", 20)
+              .attr("x", xScale(midX) - bgWidth/2)
+              .attr("y", yScale(midY) - bgHeight/2)
+              .attr("width", bgWidth)
+              .attr("height", bgHeight)
               .attr("fill", "white")
               .attr("opacity", 0.7);
               
             svg.append("text")
-              .attr("x", xScale(midX) + 5)
-              .attr("y", yScale(midY))
-              .attr("text-anchor", "start")
-              .attr("font-size", "12px")
+              .attr("x", xScale(midX))
+              .attr("y", yScale(midY) + axisFontSize/3)
+              .attr("text-anchor", "middle")
+              .style("font-size", `${axisFontSize}px`)
               .attr("font-weight", "bold")
               .attr("fill", "green")
               .text(stageNum);
@@ -293,10 +320,15 @@ const DistillationColumnSimulator2 = () => {
       }
     }
 
-    // Add legend
+    // Add legend with responsive positioning and sizing
+    const legendWidth = Math.max(120, Math.min(150, width * 0.25));
+    const legendHeight = Math.max(80, Math.min(100, height * 0.15));
+    const legendX = width - legendWidth - 10;
+    const legendY = 10;
+    
     const legend = svg.append("g")
       .attr("class", "legend")
-      .attr("transform", `translate(${width - 150}, 20)`);
+      .attr("transform", `translate(${legendX}, ${legendY})`);
 
     // Operating line legend
     legend.append("line")
@@ -311,7 +343,7 @@ const DistillationColumnSimulator2 = () => {
       .attr("x", 25)
       .attr("y", 5)
       .text("Operating Line")
-      .attr("font-size", "12px");
+      .style("font-size", `${axisFontSize}px`);
 
     // Equilibrium line legend
     legend.append("line")
@@ -326,7 +358,7 @@ const DistillationColumnSimulator2 = () => {
       .attr("x", 25)
       .attr("y", 25)
       .text("Equilibrium Line")
-      .attr("font-size", "12px");
+      .style("font-size", `${axisFontSize}px`);
 
     // Stage lines legend
     legend.append("line")
@@ -341,9 +373,23 @@ const DistillationColumnSimulator2 = () => {
       .attr("x", 25)
       .attr("y", 45)
       .text("Stage Lines")
-      .attr("font-size", "12px");
+      .style("font-size", `${axisFontSize}px`);
 
   }, [equilibriumSlope, operatingLineSlope, xIn, yIn, xOut, yOut, showOperatingLine, showEquilibriumLine, showStages, stages, stagePoints]);
+
+  // Add window resize handler to redraw the visualization
+  useEffect(() => {
+    const handleResize = () => {
+      // Force a re-render of the visualization
+      if (visualizationRef.current) {
+        const event = new Event('resize');
+        window.dispatchEvent(event);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <div className="simulator-container">

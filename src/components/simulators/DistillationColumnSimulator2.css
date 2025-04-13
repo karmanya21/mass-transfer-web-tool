@@ -218,10 +218,29 @@
   border: 1px solid #a7f3d0;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
+/* Responsive design improvements */
+@media (max-width: 1200px) {
   .simulation-layout {
     flex-direction: column;
+  }
+  
+  .controls-panel {
+    max-width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .visualization-panel {
+    min-width: 100%;
+  }
+  
+  .visualization-container {
+    height: 500px;
+  }
+}
+
+@media (max-width: 768px) {
+  .simulator-container {
+    padding: 10px;
   }
   
   .visualization-container {
@@ -230,5 +249,31 @@
   
   .parameter {
     margin-bottom: 15px;
+  }
+  
+  .visualization-description {
+    padding: 15px;
+  }
+  
+  .visualization-description p {
+    font-size: 0.9em;
+  }
+}
+
+@media (max-width: 480px) {
+  .visualization-container {
+    height: 300px;
+  }
+  
+  .controls-panel, .visualization-panel {
+    padding: 15px;
+  }
+  
+  .parameter label {
+    font-size: 0.9em;
+  }
+  
+  .result-value {
+    font-size: 1em;
   }
 } 
