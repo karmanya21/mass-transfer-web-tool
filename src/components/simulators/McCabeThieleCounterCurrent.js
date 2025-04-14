@@ -4,12 +4,12 @@ import './McCabeThieleCounterCurrent.css';
 
 const McCabeThieleCounterCurrent = () => {
   // State variables for simulation parameters
-  const [equilibriumFunction, setEquilibriumFunction] = useState("2.5 * x"); // Default equilibrium function
-  const [Ls, setLs] = useState(170); // Liquid flow rate
-  const [Gs, setGs] = useState(70); // Gas flow rate
-  const [xIn, setXIn] = useState(0.06); // Input liquid concentration
-  const [yIn, setYIn] = useState(0.27); // Input gas concentration
-  const [xOut, setXOut] = useState(0.46); // Output liquid concentration
+  const [equilibriumFunction, setEquilibriumFunction] = useState("2 * x * x"); // Default equilibrium function
+  const [Ls, setLs] = useState(130); // Liquid flow rate
+  const [Gs, setGs] = useState(50); // Gas flow rate
+  const [xIn, setXIn] = useState(0.39); // Input liquid concentration
+  const [yIn, setYIn] = useState(0.36); // Input gas concentration
+  const [xOut, setXOut] = useState(0.87); // Output liquid concentration
   const [yOut, setYOut] = useState(0); // Calculated output gas concentration
   const [stages, setStages] = useState(0); // Number of stages
   const [stagePoints, setStagePoints] = useState([]); // Points for stages visualization
