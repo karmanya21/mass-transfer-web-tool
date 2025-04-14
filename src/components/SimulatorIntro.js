@@ -161,6 +161,46 @@ const SimulatorIntro = ({ simulator, simulatorPath }) => {
           </ul>
         </>
       );
+    } else if (id === 'mccabe-thiele') {
+      return (
+        <>
+          <p>
+            The McCabe-Thiele Method Simulator is a powerful educational tool for chemical engineering that visualizes counter-current mass transfer operations, particularly in absorption, stripping, and distillation processes.
+          </p>
+          <p>
+            <strong>Key Parameters:</strong>
+          </p>
+          <ul>
+            <li><strong>Equilibrium Function:</strong> Relationship between liquid and gas phase concentrations at equilibrium (y = f(x))</li>
+            <li><strong>Liquid Flow Rate (Ls):</strong> Rate of liquid phase flow through the column</li>
+            <li><strong>Gas Flow Rate (Gs):</strong> Rate of gas phase flow through the column</li>
+            <li><strong>Input/Output Concentrations:</strong> Liquid (x) and gas (y) phase concentrations at inlet and outlet</li>
+            <li><strong>Operating Line Slope (Ls/Gs):</strong> Determines the mass balance relationship between phases</li>
+          </ul>
+          <p>
+            The simulation visually demonstrates:
+          </p>
+          <ul>
+            <li>The equilibrium curve representing thermodynamic constraints</li>
+            <li>The operating line showing mass balance relationships</li>
+            <li>Step-by-step calculation of theoretical stages needed for separation</li>
+            <li>Mass transfer driving forces at each stage</li>
+          </ul>
+          <p>
+            This simulator helps students and professionals understand:
+          </p>
+          <ul>
+            <li>Graphical determination of required separation stages</li>
+            <li>Effect of flow rates on separation efficiency</li>
+            <li>Impact of equilibrium relationships on process design</li>
+            <li>Trade-offs between number of stages and operating conditions</li>
+            <li>Fundamental concepts of counter-current mass transfer operations</li>
+          </ul>
+          <p>
+            The interactive nature of the simulator allows users to immediately see how changing parameters affects the separation process, making it an invaluable tool for process design and optimization in chemical engineering education and practice.
+          </p>
+        </>
+      );
     }
     // Add cases for other simulators here
     return <p>Information about this simulator will be added soon.</p>;
