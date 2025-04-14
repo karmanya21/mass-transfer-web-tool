@@ -1,20 +1,24 @@
 /* Base styles for the simulator container */
 .simulator-container {
-  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
   max-width: 1200px;
   margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
 }
 
 .simulator-container h1 {
   text-align: center;
+  margin-bottom: 20px;
   color: #333;
-  margin-bottom: 30px;
 }
 
 .simulation-layout {
   display: flex;
-  gap: 30px;
-  margin-top: 20px;
+  flex-direction: row;
+  gap: 20px;
 }
 
 /* Controls panel styles */
@@ -22,57 +26,74 @@
   flex: 1;
   min-width: 300px;
   max-width: 400px;
-  background: #f5f5f5;
-  padding: 20px;
+  background-color: #f5f5f5;
   border-radius: 8px;
+  padding: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .controls-panel h3 {
   margin-top: 0;
+  margin-bottom: 15px;
   color: #333;
-  border-bottom: 2px solid #ddd;
+  border-bottom: 1px solid #ddd;
   padding-bottom: 10px;
-  margin-bottom: 20px;
 }
 
 /* Parameter styles */
 .parameter {
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 .parameter label {
   display: block;
   margin-bottom: 5px;
+  font-weight: bold;
   color: #555;
-  font-weight: 500;
 }
 
 .parameter input[type="range"] {
   width: 100%;
-  margin: 10px 0;
+  margin-bottom: 5px;
+}
+
+.parameter input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 5px;
 }
 
 .parameter .value {
   display: inline-block;
-  min-width: 60px;
+  min-width: 40px;
   text-align: right;
+  font-weight: bold;
+  color: #333;
+}
+
+.parameter-help {
+  font-size: 0.85em;
   color: #666;
+  margin-top: 5px;
+  font-style: italic;
 }
 
 .calculated-value {
   font-weight: bold;
-  color: #2196F3;
+  color: #333;
 }
 
 .display-options {
-  margin-top: 30px;
-  padding-top: 20px;
+  margin-top: 20px;
+  padding-top: 15px;
   border-top: 1px solid #ddd;
 }
 
 .display-options h4 {
   margin-top: 0;
+  margin-bottom: 10px;
   color: #333;
 }
 
@@ -85,12 +106,12 @@
 }
 
 .error-message {
-  margin-top: 20px;
-  padding: 10px;
+  color: #d32f2f;
   background-color: #ffebee;
-  color: #c62828;
+  padding: 10px;
   border-radius: 4px;
-  border: 1px solid #ef9a9a;
+  margin-top: 10px;
+  font-size: 0.9em;
 }
 
 /* Calculated values section */
@@ -106,10 +127,10 @@
 }
 
 .result-card {
-  background: white;
-  padding: 15px;
+  background-color: white;
   border-radius: 6px;
-  margin-bottom: 15px;
+  padding: 10px;
+  margin-bottom: 10px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
@@ -120,53 +141,53 @@
 }
 
 .result-label {
-  color: #666;
+  font-weight: bold;
+  color: #555;
 }
 
 .result-value {
   font-weight: bold;
-  color: #2196F3;
-  font-size: 1.2em;
+  color: #333;
 }
 
 /* Visualization panel styles */
 .visualization-panel {
   flex: 2;
-  min-width: 600px;
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .visualization-container {
-  width: 100%;
-  height: 600px;
-  margin-bottom: 20px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  overflow: hidden;
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-height: 500px;
 }
 
 .visualization-area {
   width: 100%;
   height: 100%;
+  min-height: 500px;
 }
 
 .visualization-description {
-  padding: 20px;
-  background: #f8f9fa;
-  border-radius: 4px;
-  color: #666;
-  line-height: 1.6;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #ddd;
+}
+
+.visualization-description h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #333;
 }
 
 .visualization-description p {
-  margin: 0 0 15px 0;
-}
-
-.visualization-description p:last-child {
-  margin-bottom: 0;
+  margin-bottom: 10px;
+  line-height: 1.5;
+  color: #555;
 }
 
 /* McCabe-Thiele diagram specific styles */
@@ -177,48 +198,43 @@
 }
 
 .axis-line {
-  stroke: #ccc;
-  stroke-width: 1;
+  stroke: #333;
+  stroke-width: 1.5;
 }
 
 .axis-text {
-  fill: #666;
   font-size: 12px;
+  fill: #333;
 }
 
 .operating-line {
-  stroke: #4facfe;
+  stroke: blue;
   stroke-width: 2;
 }
 
 .equilibrium-line {
-  stroke: #ff6b6b;
+  stroke: red;
   stroke-width: 2;
 }
 
 .stage-line {
-  stroke: #51cf66;
-  stroke-width: 1.5;
-  stroke-dasharray: 4;
+  stroke: purple;
+  stroke-width: 2;
+  stroke-dasharray: 5, 5;
 }
 
 .stage-point {
-  fill: #51cf66;
+  fill: purple;
+  r: 4;
 }
 
-/* Stage count display */
 .stage-count {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: #059669;
-  margin-top: 0.5rem;
-  padding: 0.5rem;
-  background-color: #d1fae5;
-  border-radius: 0.375rem;
-  border: 1px solid #a7f3d0;
+  font-size: 10px;
+  fill: #333;
+  text-anchor: middle;
 }
 
-/* Responsive design improvements */
+/* Responsive styles */
 @media (max-width: 1200px) {
   .simulation-layout {
     flex-direction: column;
@@ -226,33 +242,40 @@
   
   .controls-panel {
     max-width: 100%;
-    margin-bottom: 20px;
   }
   
   .visualization-panel {
-    min-width: 100%;
+    width: 100%;
   }
   
   .visualization-container {
-    height: 500px;
+    min-height: 400px;
   }
 }
 
 @media (max-width: 768px) {
-  .simulator-container {
-    padding: 10px;
+  .simulation-layout {
+    flex-direction: column;
+  }
+  
+  .controls-panel {
+    max-width: 100%;
   }
   
   .visualization-container {
-    height: 400px;
+    min-height: 350px;
+  }
+  
+  .visualization-area {
+    min-height: 350px;
   }
   
   .parameter {
-    margin-bottom: 15px;
+    margin-bottom: 10px;
   }
   
   .visualization-description {
-    padding: 15px;
+    margin-top: 15px;
   }
   
   .visualization-description p {
@@ -262,7 +285,7 @@
 
 @media (max-width: 480px) {
   .visualization-container {
-    height: 300px;
+    min-height: 300px;
   }
   
   .controls-panel, .visualization-panel {
@@ -274,6 +297,38 @@
   }
   
   .result-value {
-    font-size: 1em;
+    font-size: 0.9em;
   }
+}
+
+/* Grid styles */
+.grid line {
+  stroke: #999;
+  stroke-width: 0.5;
+  stroke-opacity: 0.5;
+  stroke-dasharray: 3,3;
+}
+
+.grid path {
+  stroke-width: 0;
+}
+
+/* Stage lines */
+.stage-line {
+  stroke-width: 2;
+}
+
+.stage-line.horizontal {
+  stroke: green;
+}
+
+.stage-line.vertical {
+  stroke: purple;
+}
+
+.stage-point {
+  fill: none;
+  stroke: #333;
+  stroke-width: 1;
+  r: 4;
 } 

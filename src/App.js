@@ -4,8 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import HomePage from './components/HomePage';
 import SimulatorIntro from './components/SimulatorIntro';
 import EquimolarDiffusionSimulator from './components/simulators/EquimolarDiffusionSimulator';
-import DistillationColumnSimulator from './components/simulators/DistillationColumnSimulator';
-import DistillationColumnSimulator2 from './components/simulators/DistillationColumnSimulator2';
+import McCabeThieleCounterCurrent from './components/simulators/McCabeThieleCounterCurrent';
 import PackedBedSimulator from './components/simulators/PackedBedSimulator';
 import StagnantFilmDiffusion from './components/simulators/StagnantFilmDiffusion';
 import './App.css';
@@ -25,24 +24,17 @@ const simulators = [
     path: '/simulators/stagnant-film'
   },
   {
-    id: 'distillation-column',
-    title: 'Distillation Column Stages',
-    description: 'Calculate the number of stages in a distillation column using McCabe-Thiele method.',
-    path: '/simulators/distillation-column'
-  },
-  {
-    id: 'distillation-column-2',
+    id: 'mccabe-thiele',
     title: 'McCabe-Thiele Method Simulator',
     description: 'Interactive visualization of the McCabe-Thiele method for distillation column design.',
-    path: '/simulators/distillation-column-2'
+    path: '/simulators/mccabe-thiele'
   },
   {
     id: 'packed-bed',
     title: 'Packed Bed Reactor',
     description: 'Simulation of mass transfer and reaction in a packed bed reactor.',
     path: '/simulators/packed-bed'
-  },
-  // Other simulators would be added here
+  }
 ];
 
 function App() {
@@ -76,31 +68,20 @@ function App() {
               element={<StagnantFilmDiffusion />} 
             />
             <Route 
-              path="/simulators/distillation-column" 
+              path="/simulators/mccabe-thiele" 
               element={<SimulatorIntro 
                 simulator={simulators[2]} 
-                simulatorPath="/simulators/distillation-column/simulate"
+                simulatorPath="/simulators/mccabe-thiele/simulate"
               />} 
             />
             <Route 
-              path="/simulators/distillation-column/simulate" 
-              element={<DistillationColumnSimulator />} 
-            />
-            <Route 
-              path="/simulators/distillation-column-2" 
-              element={<SimulatorIntro 
-                simulator={simulators[3]} 
-                simulatorPath="/simulators/distillation-column-2/simulate"
-              />} 
-            />
-            <Route 
-              path="/simulators/distillation-column-2/simulate" 
-              element={<DistillationColumnSimulator2 />} 
+              path="/simulators/mccabe-thiele/simulate" 
+              element={<McCabeThieleCounterCurrent />} 
             />
             <Route 
               path="/simulators/packed-bed" 
               element={<SimulatorIntro 
-                simulator={simulators[4]} 
+                simulator={simulators[3]} 
                 simulatorPath="/simulators/packed-bed/simulate"
               />} 
             />
