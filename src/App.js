@@ -7,6 +7,7 @@ import EquimolarDiffusionSimulator from './components/simulators/EquimolarDiffus
 import McCabeThieleCounterCurrent from './components/simulators/McCabeThieleCounterCurrent';
 import PackedBedSimulator from './components/simulators/PackedBedSimulator';
 import StagnantFilmDiffusion from './components/simulators/StagnantFilmDiffusion';
+import CrosscurrentStageSimulator from './components/simulators/CrosscurrentStageSimulator';
 import './App.css';
 
 // Data for the simulators
@@ -34,6 +35,12 @@ const simulators = [
     title: 'Packed Bed Reactor',
     description: 'Simulation of mass transfer and reaction in a packed bed reactor.',
     path: '/simulators/packed-bed'
+  },
+  {
+    id: 'crosscurrent-stage',
+    title: 'Crosscurrent Stage Simulator',
+    description: 'Simulation of mass transfer in crosscurrent stage operations.',
+    path: '/simulators/crosscurrent-stage'
   }
 ];
 
@@ -89,7 +96,17 @@ function App() {
               path="/simulators/packed-bed/simulate" 
               element={<PackedBedSimulator />} 
             />
-            {/* Other routes would be added here */}
+            <Route 
+              path="/simulators/crosscurrent-stage" 
+              element={<SimulatorIntro 
+                simulator={simulators[4]} 
+                simulatorPath="/simulators/crosscurrent-stage/simulate"
+              />} 
+            />
+            <Route 
+              path="/simulators/crosscurrent-stage/simulate" 
+              element={<CrosscurrentStageSimulator />} 
+            />
           </Routes>
         </div>
       </div>
