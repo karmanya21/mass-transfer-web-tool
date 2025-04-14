@@ -39,7 +39,7 @@ const simulators = [
   {
     id: 'crosscurrent-stage',
     title: 'Crosscurrent Stage Simulator',
-    description: 'Simulation of mass transfer in crosscurrent stage operations.',
+    description: 'Interactive visualization of gas-to-liquid mass transfer in crosscurrent operations. Features include equilibrium curve plotting, operating line calculations, and stage-by-stage analysis. Users can adjust flow rates (Ls, Gs), concentrations (X₀, Y₀), and define custom equilibrium relationships.',
     path: '/simulators/crosscurrent-stage'
   }
 ];

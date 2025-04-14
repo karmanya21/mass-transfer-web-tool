@@ -201,6 +201,55 @@ const SimulatorIntro = ({ simulator, simulatorPath }) => {
           </p>
         </>
       );
+    } else if (id === 'crosscurrent-stage') {
+      return (
+        <>
+          <p>
+            The Crosscurrent Stage Simulator is a powerful tool for understanding gas-to-liquid mass transfer operations
+            in crosscurrent flow arrangements. In this configuration, fresh solvent is fed to each stage while the gas
+            phase flows through the stages in sequence, making it distinct from countercurrent operations.
+          </p>
+          <p>
+            <strong>Key Parameters:</strong>
+          </p>
+          <ul>
+            <li><strong>Equilibrium Function y = f(x):</strong> Defines the relationship between gas (y) and liquid (x) phase concentrations at equilibrium</li>
+            <li><strong>Liquid Flow Rate (Ls):</strong> Fresh solvent flow rate to each stage</li>
+            <li><strong>Gas Flow Rate (Gs):</strong> Gas phase flow rate through the stages</li>
+            <li><strong>Operating Point (X₀, Y₀):</strong> Initial concentrations in liquid and gas phases</li>
+            <li><strong>Number of Stages:</strong> Number of theoretical equilibrium stages</li>
+          </ul>
+          <p>
+            The simulation visualizes:
+          </p>
+          <ul>
+            <li>Equilibrium curve (blue line) showing the thermodynamic relationship between phases</li>
+            <li>Operating lines (green) for each stage with slope = -Ls/Gs</li>
+            <li>Stage points (P) showing conditions at each stage</li>
+            <li>Equilibrium points (Q) where gas reaches equilibrium with liquid</li>
+          </ul>
+          <p>
+            This simulator helps understand:
+          </p>
+          <ul>
+            <li>Mass transfer driving forces at each stage</li>
+            <li>Effect of flow rates on separation efficiency</li>
+            <li>Impact of equilibrium relationships on process design</li>
+            <li>Trade-offs between number of stages and operating conditions</li>
+            <li>Differences between crosscurrent and countercurrent operations</li>
+          </ul>
+          <p>
+            The interactive nature allows users to:
+          </p>
+          <ul>
+            <li>Define custom equilibrium relationships using mathematical expressions</li>
+            <li>Adjust flow rates to see their impact on operating line slopes</li>
+            <li>Modify the operating point to explore different separation scenarios</li>
+            <li>Visualize stage-by-stage mass transfer in real-time</li>
+            <li>Analyze the number of stages required for a given separation</li>
+          </ul>
+        </>
+      );
     }
     // Add cases for other simulators here
     return <p>Information about this simulator will be added soon.</p>;

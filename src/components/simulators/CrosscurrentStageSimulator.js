@@ -378,11 +378,7 @@ const CrosscurrentStageSimulator = () => {
             <svg ref={visualizationRef} width="600" height="400"></svg>
             <div className="visualization-description">
               <p>
-                This simulator shows an ideal gas-to-liquid crosscurrent mass transfer process with multiple stages.
-                The blue line represents the equilibrium relationship Y = f(X), while green lines show
-                the operating lines for each stage. Points P represent stage conditions, and points Q
-                represent equilibrium conditions. The operating point (Y₀, X₀) must be above the equilibrium curve
-                for valid gas-to-liquid mass transfer.
+                This simulator shows an ideal gas-to-liquid crosscurrent mass transfer process with multiple stages. The blue line represents the equilibrium relationship Y = f(X), while green lines show the operating lines for each stage. Points P represent stage conditions, and points Q represent equilibrium conditions. The operating point (Y₀, X₀) must be above the equilibrium curve for valid gas-to-liquid mass transfer.
               </p>
             </div>
           </div>
