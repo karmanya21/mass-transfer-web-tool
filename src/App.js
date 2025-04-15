@@ -31,7 +31,7 @@ const simulators = [
   },
   {
     id: 'packed-bed',
-    title: 'Packed Bed Reactor',
+    title: 'Packed Bed Adsorption Column',
     description: 'Simulation of mass transfer and reaction in a packed bed reactor.',
     path: '/simulators/packed-bed'
   },

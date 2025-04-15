@@ -41,10 +41,10 @@ const SimulatorIntro = ({ simulator, simulatorPath }) => {
       return (
         <>
           <p>
-            A Packed Bed Reactor is a tubular vessel filled with solid catalyst particles through which reactants flow and undergo chemical transformation. This simulation demonstrates the concentration profile along the reactor length as reactants are consumed through reaction.
+            A Packed Bed Adsorption column is a tubular vessel filled with solid adsorbent particles through which a stream flows and undergoes adsorption. This simulation demonstrates the concentration profile along the reactor length. 
           </p>
           <p>
-            In this simulation, you can observe how the concentration changes throughout a packed bed reactor due to the combined effects of convection, diffusion, and reaction.
+            In this simulation, you can observe how the concentration changes throughout a packed bed adsorption column due to the combined effects of convection, diffusion, and adsorption.
           </p>
           <p>
             <strong>Key Parameters:</strong>
@@ -57,7 +57,6 @@ const SimulatorIntro = ({ simulator, simulatorPath }) => {
             <li><strong>Inlet Concentration:</strong> Initial concentration of reactants (mol/L)</li>
             <li><strong>Flow Rate:</strong> Volumetric flow rate through the reactor (m³/s)</li>
             <li><strong>Diffusivity:</strong> Molecular diffusion coefficient (m²/s)</li>
-            <li><strong>Reaction Rate:</strong> Rate of reactant consumption (mol/(L·s))</li>
           </ul>
           <p>
             <strong>Derived Parameters:</strong>
@@ -65,7 +64,6 @@ const SimulatorIntro = ({ simulator, simulatorPath }) => {
           <ul>
             <li><strong>Superficial Velocity:</strong> Flow rate divided by cross-sectional area</li>
             <li><strong>Peclet Number:</strong> Ratio of convective to diffusive transport</li>
-            <li><strong>Damköhler Number:</strong> Ratio of reaction rate to convective transport rate</li>
           </ul>
           <p>
             <strong>Governing Equations:</strong>
@@ -74,7 +72,7 @@ const SimulatorIntro = ({ simulator, simulatorPath }) => {
             The concentration profile is governed by the convection-diffusion-reaction equation:
           </p>
           <div className="equation">
-            u(∂C/∂x) = D(∂²C/∂x²) - r
+            u(∂C/∂x) = D(∂²C/∂x²) 
           </div>
           <p>
             Where:
@@ -83,7 +81,6 @@ const SimulatorIntro = ({ simulator, simulatorPath }) => {
             <li>u is the superficial velocity</li>
             <li>C is the concentration</li>
             <li>D is the effective diffusivity</li>
-            <li>r is the reaction rate</li>
             <li>x is the position along the reactor</li>
           </ul>
           <p>

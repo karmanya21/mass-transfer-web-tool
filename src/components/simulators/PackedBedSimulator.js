@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 
-const PackedBedSimulator = () => {
+const PackedBedAbsorptionSimulator = () => {
   // State for simulation parameters
   const [bedLength, setBedLength] = useState(1.0); // m
   const [bedDiameter, setBedDiameter] = useState(0.1); // m
@@ -10,7 +10,8 @@ const PackedBedSimulator = () => {
   const [inletConcentration, setInletConcentration] = useState(1.0); // mol/L
   const [flowRate, setFlowRate] = useState(0.001); // m³/s
   const [diffusivity, setDiffusivity] = useState(1.6e-5); // m²/s
-  const [reactionRate, setReactionRate] = useState(0.1); // mol/(L·s)
+  const [massTransferCoefficient, setMassTransferCoefficient] = useState(0.1); // m/s
+  const [adsorptionCapacity, setAdsorptionCapacity] = useState(10.0); // mol/kg
   const [activeTab, setActiveTab] = useState('profile'); // 'profile' or 'breakthrough'
   
   // References for D3 visualizations
@@ -26,19 +27,30 @@ const PackedBedSimulator = () => {
     const crossSectionalArea = Math.PI * Math.pow(bedDiameter, 2) / 4;
     const superficialVelocity = flowRate / crossSectionalArea;
     
-    // Calculate Peclet number (Pe = u*L/D)
-    // const pe = superficialVelocity * bedLength / diffusivity;
-    
-    // Calculate Damköhler number (Da = k*L/u)
-    const da = reactionRate * bedLength / superficialVelocity;
+    // Calculate mass transfer zone length (simplified)
+    const massTransferZoneLength = superficialVelocity / massTransferCoefficient;
     
     for (let i = 0; i <= points; i++) {
       const x = (i / points) * bedLength;
       
-      // Analytical solution for convection-diffusion-reaction equation
-      // Simplified for visualization purposes
+      // Analytical solution for absorption column (simplified exponential decay)
       const normalizedX = x / bedLength;
-      const concentration = inletConcentration * Math.exp(-da * normalizedX);
+      
+      // Assume MTZ (mass transfer zone) starts at 20% of bed length for visualization
+      const mtzStart = 0.2;
+      
+      let concentration;
+      if (normalizedX < mtzStart) {
+        // Before MTZ, concentration is at inlet level
+        concentration = inletConcentration;
+      } else if (normalizedX > mtzStart + (massTransferZoneLength / bedLength)) {
+        // After MTZ, concentration is near zero (absorbed)
+        concentration = 0.05 * inletConcentration;
+      } else {
+        // Within MTZ, concentration decreases exponentially
+        const mtzPosition = (normalizedX - mtzStart) / (massTransferZoneLength / bedLength);
+        concentration = inletConcentration * Math.exp(-5 * mtzPosition);
+      }
       
       profile.push({
         position: x,
@@ -58,18 +70,42 @@ const PackedBedSimulator = () => {
     const crossSectionalArea = Math.PI * Math.pow(bedDiameter, 2) / 4;
     const superficialVelocity = flowRate / crossSectionalArea;
     
-    // Calculate residence time
-    const residenceTime = bedLength / superficialVelocity;
+    // Calculate bed volume and mass
+    const bedVolume = crossSectionalArea * bedLength;
+    const particleDensity = 2500; // kg/m³ (typical for adsorbents)
+    const bedMass = bedVolume * (1 - voidFraction) * particleDensity;
     
-    // Calculate breakthrough time (simplified)
-    const breakthroughTime = residenceTime * 0.5;
+    // Calculate total adsorption capacity
+    const totalCapacity = bedMass * adsorptionCapacity; // mol
     
+    // Calculate loading rate
+    const loadingRate = flowRate * inletConcentration; // mol/s
+    
+    // Calculate theoretical breakthrough time (simplified)
+    const theoreticalBreakthroughTime = totalCapacity / loadingRate;
+    
+    // Add mass transfer resistance effect (MTZ)
+    const mtzFactor = 0.2; // MTZ takes up about 20% of total time
+    const breakthroughTime = theoreticalBreakthroughTime * (1 - mtzFactor);
+    const saturationTime = theoreticalBreakthroughTime * (1 + mtzFactor);
+    
+    // Generate breakthrough curve points
     for (let i = 0; i <= points; i++) {
-      const time = (i / points) * (residenceTime * 3);
+      const time = (i / points) * (saturationTime * 1.2); // extend a bit past saturation
       
-      // Sigmoid function for breakthrough curve
-      const normalizedTime = time / breakthroughTime;
-      const concentration = inletConcentration / (1 + Math.exp(-5 * (normalizedTime - 1)));
+      // S-shaped breakthrough curve using logistic function
+      let concentration;
+      if (time < breakthroughTime * 0.8) {
+        // Before breakthrough
+        concentration = 0.01 * inletConcentration;
+      } else if (time > saturationTime) {
+        // After saturation
+        concentration = 0.99 * inletConcentration;
+      } else {
+        // Breakthrough curve
+        const normalizedTime = (time - breakthroughTime * 0.8) / (saturationTime - breakthroughTime * 0.8);
+        concentration = inletConcentration / (1 + Math.exp(-10 * (normalizedTime - 0.5)));
+      }
       
       curve.push({
         time: time,
@@ -140,7 +176,7 @@ const PackedBedSimulator = () => {
         .attr("x", width / 2)
         .attr("y", 20)
         .attr("font-weight", "bold")
-        .text("Concentration Profile in Packed Bed");
+        .text("Concentration Profile in Packed Bed Absorber");
       
       // Create line generator
       const line = d3.line()
@@ -239,7 +275,7 @@ const PackedBedSimulator = () => {
         .attr("transform", "rotate(-90)")
         .attr("x", -height / 2)
         .attr("y", 15)
-        .text("Concentration (mol/L)");
+        .text("Outlet Concentration (mol/L)");
       
       // Add title
       svg.append("text")
@@ -328,12 +364,9 @@ const PackedBedSimulator = () => {
     inletConcentration, 
     flowRate, 
     diffusivity, 
-    reactionRate, 
-    activeTab,
-    calculateConcentrationProfile,
-    calculateBreakthroughCurve,
-    createProfileVisualization,
-    createBreakthroughVisualization
+    massTransferCoefficient,
+    adsorptionCapacity,
+    activeTab
   ]);
   
   // Format scientific notation for display
@@ -347,19 +380,31 @@ const PackedBedSimulator = () => {
     return flowRate / crossSectionalArea;
   };
   
-  const calculatePecletNumber = () => {
+  const calculateMassTransferZone = () => {
     const superficialVelocity = calculateSuperficialVelocity();
-    return superficialVelocity * bedLength / diffusivity;
+    return superficialVelocity / massTransferCoefficient;
   };
   
-  const calculateDamkohlerNumber = () => {
-    const superficialVelocity = calculateSuperficialVelocity();
-    return reactionRate * bedLength / superficialVelocity;
+  const calculateBreakthroughTime = () => {
+    // Calculate bed volume and mass
+    const crossSectionalArea = Math.PI * Math.pow(bedDiameter, 2) / 4;
+    const bedVolume = crossSectionalArea * bedLength;
+    const particleDensity = 2500; // kg/m³ (typical for adsorbents)
+    const bedMass = bedVolume * (1 - voidFraction) * particleDensity;
+    
+    // Calculate total adsorption capacity
+    const totalCapacity = bedMass * adsorptionCapacity; // mol
+    
+    // Calculate loading rate
+    const loadingRate = flowRate * inletConcentration; // mol/s
+    
+    // Calculate theoretical breakthrough time
+    return totalCapacity / loadingRate;
   };
   
   return (
     <div className="simulator-container">
-      <h1>Packed Bed Reactor Simulator</h1>
+      <h1>Packed Bed Absorption Column Simulator</h1>
       
       <div className="simulation-layout">
         <div className="controls-panel">
@@ -464,17 +509,31 @@ const PackedBedSimulator = () => {
           </div>
           
           <div className="parameter">
-            <label htmlFor="reactionRate">Reaction Rate (mol/(L·s))</label>
+            <label htmlFor="massTransferCoefficient">Mass Transfer Coefficient (m/s)</label>
             <input
               type="range"
-              id="reactionRate"
+              id="massTransferCoefficient"
               min="0.01"
               max="1"
               step="0.01"
-              value={reactionRate}
-              onChange={(e) => setReactionRate(parseFloat(e.target.value))}
+              value={massTransferCoefficient}
+              onChange={(e) => setMassTransferCoefficient(parseFloat(e.target.value))}
             />
-            <span className="value">{reactionRate.toFixed(2)} mol/(L·s)</span>
+            <span className="value">{massTransferCoefficient.toFixed(2)} m/s</span>
+          </div>
+          
+          <div className="parameter">
+            <label htmlFor="adsorptionCapacity">Adsorption Capacity (mol/kg)</label>
+            <input
+              type="range"
+              id="adsorptionCapacity"
+              min="1"
+              max="50"
+              step="1"
+              value={adsorptionCapacity}
+              onChange={(e) => setAdsorptionCapacity(parseFloat(e.target.value))}
+            />
+            <span className="value">{adsorptionCapacity.toFixed(1)} mol/kg</span>
           </div>
           
           <div className="calculated-values">
@@ -491,18 +550,18 @@ const PackedBedSimulator = () => {
             
             <div className="result-card">
               <div className="result-content">
-                <div className="result-label">Peclet Number</div>
+                <div className="result-label">Mass Transfer Zone Length</div>
                 <div className="result-value">
-                  {calculatePecletNumber().toFixed(2)}
+                  {calculateMassTransferZone().toFixed(2)} m
                 </div>
               </div>
             </div>
             
             <div className="result-card">
               <div className="result-content">
-                <div className="result-label">Damköhler Number</div>
+                <div className="result-label">Breakthrough Time</div>
                 <div className="result-value">
-                  {calculateDamkohlerNumber().toFixed(2)}
+                  {calculateBreakthroughTime().toFixed(1)} s
                 </div>
               </div>
             </div>
@@ -549,8 +608,8 @@ const PackedBedSimulator = () => {
           <div className="visualization-description">
             <p>
               {activeTab === 'profile' 
-                ? "This simulation shows the concentration profile along a packed bed reactor. The concentration decreases due to both convection-diffusion and reaction effects."
-                : "This simulation shows the breakthrough curve, which represents how the concentration at the outlet changes over time as the feed passes through the bed."}
+                ? "This simulation shows the concentration profile along a packed bed absorption column. The concentration decreases as the solute is absorbed by the packing material."
+                : "This simulation shows the breakthrough curve, which represents how the concentration at the outlet changes over time as the adsorbent becomes saturated."}
               Adjust the parameters to see how they affect the {activeTab === 'profile' ? 'concentration profile' : 'breakthrough curve'}.
             </p>
           </div>
@@ -560,4 +619,4 @@ const PackedBedSimulator = () => {
   );
 };
 
-export default PackedBedSimulator;
+export default PackedBedAbsorptionSimulator;
