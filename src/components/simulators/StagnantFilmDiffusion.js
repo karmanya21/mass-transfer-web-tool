@@ -129,15 +129,16 @@ const StagnantFilmDiffusion = () => {
         .attr("width", width)
         .attr("height", height);
       
-      const margin = { top: 40, right: 40, bottom: 60, left: 60 };
+      const margin = { top: 60, right: 80, bottom: 80, left: 80 };
       
-      // Create scales
+      // Create scales with more padding
       const xScale = d3.scaleLinear()
-        .domain([0, filmThickness])
+        .domain([-0.1 * filmThickness, filmThickness * 1.1])
         .range([margin.left, width - margin.right]);
       
       const yScale = d3.scaleLinear()
-        .domain([0, Math.max(bulkConcentration, surfaceConcentration) * 1.1])
+        .domain([-0.05 * Math.max(bulkConcentration, surfaceConcentration), 
+                Math.max(bulkConcentration, surfaceConcentration) * 1.2])
         .range([height - margin.bottom, margin.top]);
       
       // Add X axis
@@ -158,7 +159,7 @@ const StagnantFilmDiffusion = () => {
       svg.append("text")
         .attr("text-anchor", "middle")
         .attr("x", width / 2)
-        .attr("y", height - 10)
+        .attr("y", height - 20)
         .text("Position in Film");
       
       // Add Y axis label
@@ -166,14 +167,14 @@ const StagnantFilmDiffusion = () => {
         .attr("text-anchor", "middle")
         .attr("transform", "rotate(-90)")
         .attr("x", -height / 2)
-        .attr("y", 15)
+        .attr("y", 25)
         .text("Concentration (mol/L)");
       
       // Add title
       svg.append("text")
         .attr("text-anchor", "middle")
         .attr("x", width / 2)
-        .attr("y", 20)
+        .attr("y", 30)
         .attr("font-weight", "bold")
         .text("Concentration Profile in Stagnant Film");
       
@@ -224,13 +225,13 @@ const StagnantFilmDiffusion = () => {
       // Add labels for film boundaries
       svg.append("text")
         .attr("x", xScale(0) - 5)
-        .attr("y", margin.top - 5)
+        .attr("y", margin.top - 15)
         .attr("text-anchor", "end")
         .text("Surface (x=0)");
       
       svg.append("text")
         .attr("x", xScale(filmThickness) + 5)
-        .attr("y", margin.top - 5)
+        .attr("y", margin.top - 15)
         .attr("text-anchor", "start")
         .text("Bulk (x=L)");
       
@@ -275,15 +276,16 @@ const StagnantFilmDiffusion = () => {
         .attr("width", width)
         .attr("height", height);
       
-      const margin = { top: 40, right: 40, bottom: 60, left: 60 };
+      const margin = { top: 60, right: 80, bottom: 80, left: 80 };
       
-      // Create scales
+      // Create scales with more padding
       const xScale = d3.scaleLinear()
-        .domain([0, time])
+        .domain([-0.05 * time, time * 1.05])
         .range([margin.left, width - margin.right]);
       
       const yScale = d3.scaleLinear()
-        .domain([0, Math.max(bulkConcentration, surfaceConcentration) * 1.1])
+        .domain([-0.05 * Math.max(bulkConcentration, surfaceConcentration), 
+                Math.max(bulkConcentration, surfaceConcentration) * 1.2])
         .range([height - margin.bottom, margin.top]);
       
       // Add X axis
@@ -304,7 +306,7 @@ const StagnantFilmDiffusion = () => {
       svg.append("text")
         .attr("text-anchor", "middle")
         .attr("x", width / 2)
-        .attr("y", height - 10)
+        .attr("y", height - 20)
         .text("Time (s)");
       
       // Add Y axis label
@@ -312,14 +314,14 @@ const StagnantFilmDiffusion = () => {
         .attr("text-anchor", "middle")
         .attr("transform", "rotate(-90)")
         .attr("x", -height / 2)
-        .attr("y", 15)
+        .attr("y", 25)
         .text("Concentration (mol/L)");
       
       // Add title
       svg.append("text")
         .attr("text-anchor", "middle")
         .attr("x", width / 2)
-        .attr("y", 20)
+        .attr("y", 30)
         .attr("font-weight", "bold")
         .text("Time Evolution of Concentration at Different Positions");
       
