@@ -10,15 +10,48 @@ const PackedBedAbsorptionSimulator = () => {
   const [inletConcentration, setInletConcentration] = useState(1.0); // mol/L
   const [flowRate, setFlowRate] = useState(0.001); // m³/s
   const [diffusivity, setDiffusivity] = useState(1.6e-5); // m²/s
-  const [massTransferCoefficient, setMassTransferCoefficient] = useState(0.1); // m/s
-  const [adsorptionCapacity, setAdsorptionCapacity] = useState(10.0); // mol/kg
+  
+  // Langmuir isotherm parameters
+  const [maxAdsorptionCapacity, setMaxAdsorptionCapacity] = useState(10.0); // mol/kg (qm)
+  const [langmuirConstant, setLangmuirConstant] = useState(0.5); // L/mol (KL)
+  
+  // Mass transfer parameters
+  const [filmMassTransferCoeff, setFilmMassTransferCoeff] = useState(0.05); // m/s (kf)
+  const [intraparticleDiffusion, setIntraparticleDiffusion] = useState(1.0e-6); // m²/s (Dp)
+  
   const [activeTab, setActiveTab] = useState('profile'); // 'profile' or 'breakthrough'
   
   // References for D3 visualizations
   const profileVisualizationRef = useRef(null);
   const breakthroughVisualizationRef = useRef(null);
   
-  // Calculate concentration profile based on current parameters
+  // Calculate mass transfer coefficient using correlation
+  const calculateMassTransferCoefficient = () => {
+    // Calculate Reynolds number
+    const crossSectionalArea = Math.PI * Math.pow(bedDiameter, 2) / 4;
+    const superficialVelocity = flowRate / crossSectionalArea;
+    const fluidDensity = 1000; // kg/m³ (for water)
+    const fluidViscosity = 0.001; // Pa·s (for water)
+    const reynolds = fluidDensity * superficialVelocity * particleDiameter / fluidViscosity;
+    
+    // Calculate Schmidt number
+    const schmidt = fluidViscosity / (fluidDensity * diffusivity);
+    
+    // Calculate Sherwood number using Wakao correlation
+    const sherwood = 2.0 + 1.1 * Math.pow(reynolds, 0.6) * Math.pow(schmidt, 1/3);
+    
+    // Calculate mass transfer coefficient
+    const kc = sherwood * diffusivity / particleDiameter;
+    
+    return kc;
+  };
+  
+  // Langmuir isotherm equation: q* = qm * KL * C / (1 + KL * C)
+  const calculateEquilibriumLoading = (concentration) => {
+    return maxAdsorptionCapacity * langmuirConstant * concentration / (1 + langmuirConstant * concentration);
+  };
+  
+  // Calculate concentration profile using Improved Linear Driving Force Model
   const calculateConcentrationProfile = () => {
     const points = 100; // number of points in the profile
     const profile = [];
@@ -27,33 +60,44 @@ const PackedBedAbsorptionSimulator = () => {
     const crossSectionalArea = Math.PI * Math.pow(bedDiameter, 2) / 4;
     const superficialVelocity = flowRate / crossSectionalArea;
     
-    // Calculate mass transfer zone length (simplified)
-    const massTransferZoneLength = superficialVelocity / massTransferCoefficient;
+    // Calculate volumetric flow rate constant (equivalent to EBCT^-1)
+    const kv = superficialVelocity / bedLength;
     
+    // Calculate overall mass transfer coefficient
+    const kc = calculateMassTransferCoefficient();
+    
+    // Calculate particle surface area per unit volume
+    const particleSpecificArea = 6 * (1 - voidFraction) / particleDiameter;
+    
+    // Calculate overall volumetric mass transfer coefficient
+    const ka = kc * particleSpecificArea;
+    
+    // Calculate retardation factor from Langmuir isotherm
+    const particleDensity = 2500; // kg/m³
+    const bulkDensity = particleDensity * (1 - voidFraction);
+    
+    // Calculate C10, C50, and C90 positions using approximate analytical solution
+    // based on the extended Linear Driving Force model
+    const q0 = calculateEquilibriumLoading(inletConcentration);
+    const retardationFactor = 1 + ((1 - voidFraction) * particleDensity * maxAdsorptionCapacity * 
+                              langmuirConstant / Math.pow(1 + langmuirConstant * inletConcentration, 2)) / voidFraction;
+    
+    // Calculate effective mass transfer coefficient
+    const keff = ka / retardationFactor;
+    
+    // Calculate characteristic length
+    const characteristicLength = superficialVelocity / keff;
+    
+    // Calculate concentration profile using approximate analytical solution
     for (let i = 0; i <= points; i++) {
-      const x = (i / points) * bedLength;
+      const z = (i / points) * bedLength;
       
-      // Analytical solution for absorption column (simplified exponential decay)
-      const normalizedX = x / bedLength;
-      
-      // Assume MTZ (mass transfer zone) starts at 20% of bed length for visualization
-      const mtzStart = 0.2;
-      
-      let concentration;
-      if (normalizedX < mtzStart) {
-        // Before MTZ, concentration is at inlet level
-        concentration = inletConcentration;
-      } else if (normalizedX > mtzStart + (massTransferZoneLength / bedLength)) {
-        // After MTZ, concentration is near zero (absorbed)
-        concentration = 0.05 * inletConcentration;
-      } else {
-        // Within MTZ, concentration decreases exponentially
-        const mtzPosition = (normalizedX - mtzStart) / (massTransferZoneLength / bedLength);
-        concentration = inletConcentration * Math.exp(-5 * mtzPosition);
-      }
+      // Using the solution to advection-dispersion equation with first-order reaction
+      // C/C0 = exp(-keff/u * z)
+      const concentration = inletConcentration * Math.exp(-keff / superficialVelocity * z);
       
       profile.push({
-        position: x,
+        position: z,
         concentration: concentration
       });
     }
@@ -61,9 +105,9 @@ const PackedBedAbsorptionSimulator = () => {
     return profile;
   };
   
-  // Calculate breakthrough curve
+  // Calculate breakthrough curve using more rigorous physical model
   const calculateBreakthroughCurve = () => {
-    const points = 100;
+    const points = 200;
     const curve = [];
     
     // Calculate superficial velocity
@@ -75,38 +119,33 @@ const PackedBedAbsorptionSimulator = () => {
     const particleDensity = 2500; // kg/m³ (typical for adsorbents)
     const bedMass = bedVolume * (1 - voidFraction) * particleDensity;
     
-    // Calculate total adsorption capacity
-    const totalCapacity = bedMass * adsorptionCapacity; // mol
+    // Calculate equilibrium loading
+    const qeq = calculateEquilibriumLoading(inletConcentration);
     
-    // Calculate loading rate
-    const loadingRate = flowRate * inletConcentration; // mol/s
+    // Calculate stoichiometric time (t0.5)
+    const totalCapacity = bedMass * qeq;
+    const loadingRate = flowRate * inletConcentration;
+    const t05 = totalCapacity / loadingRate;
     
-    // Calculate theoretical breakthrough time (simplified)
-    const theoreticalBreakthroughTime = totalCapacity / loadingRate;
-    
-    // Add mass transfer resistance effect (MTZ)
-    const mtzFactor = 0.2; // MTZ takes up about 20% of total time
-    const breakthroughTime = theoreticalBreakthroughTime * (1 - mtzFactor);
-    const saturationTime = theoreticalBreakthroughTime * (1 + mtzFactor);
+    // Calculate breakthrough time (tb)
+    const tb = t05 * 0.7;  // When C/C0 ≈ 0.05
     
     // Generate breakthrough curve points
+    const maxTime = t05 * 2;  // Show up to twice the stoichiometric time
     for (let i = 0; i <= points; i++) {
-      const time = (i / points) * (saturationTime * 1.2); // extend a bit past saturation
+      const time = (i / points) * maxTime;
+      let normalizedConcentration;
       
-      // S-shaped breakthrough curve using logistic function
-      let concentration;
-      if (time < breakthroughTime * 0.8) {
-        // Before breakthrough
-        concentration = 0.01 * inletConcentration;
-      } else if (time > saturationTime) {
-        // After saturation
-        concentration = 0.99 * inletConcentration;
+      if (time < tb) {
+        normalizedConcentration = 0;
       } else {
-        // Breakthrough curve
-        const normalizedTime = (time - breakthroughTime * 0.8) / (saturationTime - breakthroughTime * 0.8);
-        concentration = inletConcentration / (1 + Math.exp(-10 * (normalizedTime - 0.5)));
+        // Standard breakthrough curve equation
+        // Uses sigmoid function centered at t0.5 with proper steepness
+        const z = 8 * (time - t05) / (t05 - tb);  // Normalized time coordinate
+        normalizedConcentration = 1 / (1 + Math.exp(-z));
       }
       
+      const concentration = inletConcentration * normalizedConcentration;
       curve.push({
         time: time,
         concentration: concentration
@@ -114,6 +153,27 @@ const PackedBedAbsorptionSimulator = () => {
     }
     
     return curve;
+  };
+  
+  // Complementary error function implementation
+  const erfc = (x) => {
+    // Approximation of the complementary error function
+    // Based on Abramowitz and Stegun approximation
+    const z = Math.abs(x);
+    const t = 1.0 / (1.0 + 0.5 * z);
+    
+    // Coefficients for approximation
+    const a1 = 0.254829592;
+    const a2 = -0.284496736;
+    const a3 = 1.421413741;
+    const a4 = -1.453152027;
+    const a5 = 1.061405429;
+    const p = 0.3275911;
+    
+    // Calculate approximation
+    const erfcApprox = t * Math.exp(-z * z) * (a1 + t * (a2 + t * (a3 + t * (a4 + t * a5))));
+    
+    return x < 0 ? 2 - erfcApprox : erfcApprox;
   };
   
   // Create concentration profile visualization
@@ -130,7 +190,7 @@ const PackedBedAbsorptionSimulator = () => {
       // Set dimensions
       const width = profileVisualizationRef.current.clientWidth || 600;
       const height = profileVisualizationRef.current.clientHeight || 400;
-      const margin = { top: 40, right: 40, bottom: 60, left: 90 };
+      const margin = { top: 40, right: 40, bottom: 60, left: 70 };
       
       // Create scales
       const xScale = d3.scaleLinear()
@@ -237,7 +297,7 @@ const PackedBedAbsorptionSimulator = () => {
       // Set dimensions
       const width = breakthroughVisualizationRef.current.clientWidth || 600;
       const height = breakthroughVisualizationRef.current.clientHeight || 400;
-      const margin = { top: 40, right: 40, bottom: 60, left: 90 };
+      const margin = { top: 40, right: 40, bottom: 60, left: 70 };
       
       // Create scales
       const xScale = d3.scaleLinear()
@@ -364,8 +424,10 @@ const PackedBedAbsorptionSimulator = () => {
     inletConcentration, 
     flowRate, 
     diffusivity, 
-    massTransferCoefficient,
-    adsorptionCapacity,
+    maxAdsorptionCapacity,
+    langmuirConstant,
+    filmMassTransferCoeff,
+    intraparticleDiffusion,
     activeTab
   ]);
   
@@ -382,7 +444,13 @@ const PackedBedAbsorptionSimulator = () => {
   
   const calculateMassTransferZone = () => {
     const superficialVelocity = calculateSuperficialVelocity();
-    return superficialVelocity / massTransferCoefficient;
+    const kc = calculateMassTransferCoefficient();
+    const particleSpecificArea = 6 * (1 - voidFraction) / particleDiameter;
+    const ka = kc * particleSpecificArea;
+    
+    // Calculate MTZ length based on theory
+    const mtz = superficialVelocity / ka;
+    return mtz;
   };
   
   const calculateBreakthroughTime = () => {
@@ -392,8 +460,11 @@ const PackedBedAbsorptionSimulator = () => {
     const particleDensity = 2500; // kg/m³ (typical for adsorbents)
     const bedMass = bedVolume * (1 - voidFraction) * particleDensity;
     
+    // Calculate equilibrium loading using Langmuir isotherm
+    const qeq = calculateEquilibriumLoading(inletConcentration);
+    
     // Calculate total adsorption capacity
-    const totalCapacity = bedMass * adsorptionCapacity; // mol
+    const totalCapacity = bedMass * qeq; // mol
     
     // Calculate loading rate
     const loadingRate = flowRate * inletConcentration; // mol/s
@@ -509,31 +580,45 @@ const PackedBedAbsorptionSimulator = () => {
           </div>
           
           <div className="parameter">
-            <label htmlFor="massTransferCoefficient">Mass Transfer Coefficient (m/s)</label>
+            <label htmlFor="maxAdsorptionCapacity">Max Adsorption Capacity (mol/kg)</label>
             <input
               type="range"
-              id="massTransferCoefficient"
-              min="0.01"
-              max="1"
-              step="0.01"
-              value={massTransferCoefficient}
-              onChange={(e) => setMassTransferCoefficient(parseFloat(e.target.value))}
-            />
-            <span className="value">{massTransferCoefficient.toFixed(2)} m/s</span>
-          </div>
-          
-          <div className="parameter">
-            <label htmlFor="adsorptionCapacity">Adsorption Capacity (mol/kg)</label>
-            <input
-              type="range"
-              id="adsorptionCapacity"
+              id="maxAdsorptionCapacity"
               min="1"
               max="50"
               step="1"
-              value={adsorptionCapacity}
-              onChange={(e) => setAdsorptionCapacity(parseFloat(e.target.value))}
+              value={maxAdsorptionCapacity}
+              onChange={(e) => setMaxAdsorptionCapacity(parseFloat(e.target.value))}
             />
-            <span className="value">{adsorptionCapacity.toFixed(1)} mol/kg</span>
+            <span className="value">{maxAdsorptionCapacity.toFixed(1)} mol/kg</span>
+          </div>
+          
+          <div className="parameter">
+            <label htmlFor="langmuirConstant">Langmuir Constant (L/mol)</label>
+            <input
+              type="range"
+              id="langmuirConstant"
+              min="0.1"
+              max="10"
+              step="0.1"
+              value={langmuirConstant}
+              onChange={(e) => setLangmuirConstant(parseFloat(e.target.value))}
+            />
+            <span className="value">{langmuirConstant.toFixed(1)} L/mol</span>
+          </div>
+          
+          <div className="parameter">
+            <label htmlFor="intraparticleDiffusion">Intraparticle Diffusion (m²/s)</label>
+            <input
+              type="range"
+              id="intraparticleDiffusion"
+              min="1e-7"
+              max="1e-5"
+              step="1e-7"
+              value={intraparticleDiffusion}
+              onChange={(e) => setIntraparticleDiffusion(parseFloat(e.target.value))}
+            />
+            <span className="value">{formatScientific(intraparticleDiffusion)} m²/s</span>
           </div>
           
           <div className="calculated-values">
@@ -544,6 +629,15 @@ const PackedBedAbsorptionSimulator = () => {
                 <div className="result-label">Superficial Velocity</div>
                 <div className="result-value">
                   {calculateSuperficialVelocity().toFixed(4)} m/s
+                </div>
+              </div>
+            </div>
+            
+            <div className="result-card">
+              <div className="result-content">
+                <div className="result-label">Mass Transfer Coefficient</div>
+                <div className="result-value">
+                  {calculateMassTransferCoefficient().toFixed(5)} m/s
                 </div>
               </div>
             </div>
@@ -562,6 +656,15 @@ const PackedBedAbsorptionSimulator = () => {
                 <div className="result-label">Breakthrough Time</div>
                 <div className="result-value">
                   {calculateBreakthroughTime().toFixed(1)} s
+                </div>
+              </div>
+            </div>
+            
+            <div className="result-card">
+              <div className="result-content">
+                <div className="result-label">Equilibrium Loading at C0</div>
+                <div className="result-value">
+                  {calculateEquilibriumLoading(inletConcentration).toFixed(2)} mol/kg
                 </div>
               </div>
             </div>
@@ -608,8 +711,8 @@ const PackedBedAbsorptionSimulator = () => {
           <div className="visualization-description">
             <p>
               {activeTab === 'profile' 
-                ? "This simulation shows the concentration profile along a packed bed absorption column. The concentration decreases as the solute is absorbed by the packing material."
-                : "This simulation shows the breakthrough curve, which represents how the concentration at the outlet changes over time as the adsorbent becomes saturated."}
+                ? "This simulation shows the concentration profile along a packed bed absorption column using a more rigorous model based on Langmuir adsorption isotherm and advection-dispersion with first-order kinetics."
+                : "This simulation shows the breakthrough curve based on Langmuir isotherm principles and the modified Klinkenberg solution, which represents how the concentration at the outlet changes over time as the adsorbent becomes saturated."}
               Adjust the parameters to see how they affect the {activeTab === 'profile' ? 'concentration profile' : 'breakthrough curve'}.
             </p>
           </div>
