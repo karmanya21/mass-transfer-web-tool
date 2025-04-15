@@ -1,57 +1,209 @@
 .simulator-intro {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto 0 40px;
+  padding: 30px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  background-color: #f9f9fc;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.intro-header {
+  margin-bottom: 40px;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.simulator-intro h1 {
+  color: #2c3e50;
+  font-weight: 700;
+  font-size: 2.3rem;
+  margin: 0 0 15px 0;
+  position: relative;
+}
+
+.simulator-summary {
+  font-size: 1.2rem;
+  color: #555;
+  line-height: 1.5;
+  max-width: 800px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.institution-logo img {
+  height: 60px;
+  width: auto;
+  object-fit: contain;
+}
+
+.intro-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 30px;
+}
+
+.intro-content {
+  line-height: 1.6;
+  font-size: 1.1rem;
+}
+
+.content-card {
+  background: white;
+  border-radius: 10px;
+  padding: 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.intro-content p {
+  margin-bottom: 20px;
+  color: #444;
+  line-height: 1.7;
+}
+
+.intro-content strong {
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.intro-content ul, .intro-content ol {
+  margin: 20px 0;
+  padding-left: 25px;
+}
+
+.intro-content li {
+  margin-bottom: 10px;
+  color: #444;
+}
+
+.equation {
+  text-align: center;
+  font-size: 1.2rem;
+  margin: 25px 0;
+  padding: 20px;
+  background-color: #f5f7fa;
+  border-radius: 8px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-features {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.features-card {
+  background: white;
+  border-radius: 10px;
+  padding: 25px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.features-card h3 {
+  color: #2c3e50;
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #4facfe;
+}
+
+.features-list, .instruction-list {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.features-list li, .instruction-list li {
+  margin-bottom: 12px;
+  color: #444;
+  line-height: 1.5;
+}
+
+.instruction-list li {
+  padding-left: 10px;
+}
+
+.start-simulation {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.simulation-button {
+  display: inline-block;
+  padding: 15px 30px;
+  background: linear-gradient(45deg, #4facfe, #00f2fe);
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  box-shadow: 0 8px 20px rgba(79, 172, 254, 0.3);
+  transition: all 0.3s;
+  letter-spacing: 1px;
+  width: calc(100% - 60px);
+}
+
+.simulation-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px rgba(79, 172, 254, 0.4);
+}
+
+.simulation-button:active {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+}
+
+@media (max-width: 900px) {
+  .intro-container {
+    grid-template-columns: 1fr;
   }
   
   .simulator-intro h1 {
-    color: #333;
-    border-bottom: 2px solid #4facfe;
-    padding-bottom: 15px;
-    margin-bottom: 30px;
+    font-size: 1.8rem;
   }
   
-  .intro-content {
-    line-height: 1.6;
+  .simulator-summary {
     font-size: 1.1rem;
   }
   
-  .intro-content ul {
-    margin: 20px 0;
-    padding-left: 25px;
-  }
-  
-  .intro-content li {
-    margin-bottom: 10px;
-  }
-  
-  .equation {
+  .header-content {
+    flex-direction: column;
     text-align: center;
-    font-size: 1.2rem;
-    margin: 20px 0;
-    padding: 15px;
-    background-color: #f5f7fa;
-    border-radius: 5px;
+  }
+  
+  .institution-logo {
+    margin-top: 20px;
+  }
+  
+  .institution-logo img {
+    height: 50px;
   }
   
   .start-simulation {
-    margin-top: 40px;
-    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .simulator-intro {
+    padding: 15px;
+  }
+  
+  .content-card, .features-card {
+    padding: 20px;
   }
   
   .simulation-button {
-    display: inline-block;
-    padding: 12px 30px;
-    background: linear-gradient(45deg, #4facfe, #00f2fe);
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
-    font-weight: bold;
-    box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
-    transition: all 0.3s;
+    width: 100%;
+    padding: 12px 15px;
   }
-  
-  .simulation-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4);
-  }
+}

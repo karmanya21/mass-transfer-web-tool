@@ -254,17 +254,54 @@ const SimulatorIntro = ({ simulator, simulatorPath }) => {
 
   return (
     <div className="simulator-intro">
-      <h1>{simulator.title}</h1>
-      <div className="intro-content">
-        {getDetailedDescription(simulator.id)}
-        <div className="start-simulation">
-          <Link to={simulatorPath} className="simulation-button">
-            Open Simulator
-          </Link>
+      <div className="intro-header">
+        <div className="header-content">
+          <h1>{simulator.title}</h1>
+          <div className="institution-logo">
+            <img src="/IITK_logo.png" alt="IITK Logo" />
+          </div>
+        </div>
+        <div className="simulator-summary">{simulator.description}</div>
+      </div>
+      
+      <div className="intro-container">
+        <div className="intro-content">
+          <div className="content-card">
+            {getDetailedDescription(simulator.id)}
+          </div>
+        </div>
+        
+        <div className="sidebar-features">
+          <div className="start-simulation">
+            <Link to={simulatorPath} className="simulation-button">
+              Start Simulation
+            </Link>
+          </div>
+          
+          <div className="features-card">
+            <h3>Simulator Features</h3>
+            <ul className="features-list">
+              <li>Interactive parameter controls</li>
+              <li>Real-time visualization</li>
+              <li>Detailed data analysis</li>
+              <li>Educational explanations</li>
+            </ul>
+          </div>
+          
+          <div className="features-card">
+            <h3>Instructions</h3>
+            <ol className="instruction-list">
+              <li>Read the detailed description for theoretical background</li>
+              <li>Start the simulation using the button above</li>
+              <li>Adjust parameters using the control panel</li>
+              <li>Observe changes in the visualization</li>
+              <li>Analyze results and relationships between variables</li>
+            </ol>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default  SimulatorIntro;
+export default SimulatorIntro;

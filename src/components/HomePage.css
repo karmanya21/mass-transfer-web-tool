@@ -1,25 +1,352 @@
+:root {
+  --primary: #4c6ef5;
+  --secondary: #15aabf;
+  --text-primary: #333;
+  --text-secondary: #666;
+  --background-light: #ffffff;
+  --border-color: rgba(0, 0, 0, 0.05);
+  --border-radius: 12px;
+  --primary-gradient: linear-gradient(135deg, #4c6ef5, #15aabf);
+  --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  --box-shadow-hover: 0 15px 30px rgba(0, 0, 0, 0.1);
+  --transition: transform 0.3s, box-shadow 0.3s;
+}
+
 .home-page {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto 0 40px;
+  padding: 30px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text-primary);
+}
+
+/* Hero Section */
+.hero-section {
+  text-align: center;
+  padding: 40px 20px;
+  margin-bottom: 40px;
+  background: var(--primary-gradient);
+  border-radius: var(--border-radius);
+  color: white;
+  box-shadow: var(--box-shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section::before {
+  content: "";
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: -50%;
+  left: -50%;
+  z-index: 0;
+  background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='rgba(255,255,255,.075)' fill-rule='evenodd'/%3E%3C/svg%3E") repeat;
+  animation: moving-background 20s linear infinite;
+}
+
+@keyframes moving-background {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.hero-title {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  font-weight: 700;
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  position: relative;
+  z-index: 1;
+  font-weight: 400;
+}
+
+/* Intro Cards */
+.intro-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-bottom: 50px;
+}
+
+.intro-card {
+  background-color: var(--background-light);
+  border-radius: var(--border-radius);
+  padding: 25px;
+  box-shadow: var(--box-shadow);
+  transition: var(--transition);
+  position: relative;
+  border-top: 4px solid var(--primary);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.intro-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--box-shadow-hover);
+}
+
+.card-icon {
+  font-size: 2rem;
+  margin-bottom: 15px;
+  display: inline-block;
+  background: var(--primary-gradient);
+  color: white;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
+}
+
+.intro-card h2 {
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  margin: 0 0 15px 0;
+  font-weight: 600;
+}
+
+.intro-card p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Simulator Showcase */
+.simulator-showcase {
+  margin-bottom: 50px;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 30px;
+  position: relative;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.section-title::after {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 4px;
+  background: var(--primary-gradient);
+  margin: 10px auto;
+  border-radius: 2px;
+}
+
+.simulator-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 25px;
+}
+
+.simulator-card {
+  background-color: var(--background-light);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--box-shadow);
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: var(--text-primary);
+  position: relative;
+}
+
+.simulator-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--box-shadow-hover);
+}
+
+.card-header {
+  padding: 20px;
+  background: var(--primary-gradient);
+  color: white;
+  display: flex;
+  align-items: center;
+}
+
+.sim-icon {
+  font-size: 1.8rem;
+  margin-right: 15px;
+  display: inline-block;
+  background-color: rgba(255, 255, 255, 0.2);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: white;
+}
+
+.simulator-card p {
+  padding: 20px;
+  flex-grow: 1;
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.card-footer {
+  padding: 15px 20px;
+  border-top: 1px solid var(--border-color);
+  text-align: right;
+}
+
+.explore-btn {
+  display: inline-block;
+  padding: 8px 16px;
+  background: var(--primary-gradient);
+  color: white;
+  border-radius: 20px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: var(--transition);
+}
+
+.simulator-card:hover .explore-btn {
+  background: var(--secondary);
+  transform: scale(1.05);
+}
+
+/* Get Started Section */
+.get-started {
+  text-align: center;
+  padding: 30px;
+  background-color: var(--background-light);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  margin-bottom: 30px;
+  border-left: 4px solid var(--primary);
+}
+
+.get-started h2 {
+  margin-bottom: 15px;
+  color: var(--text-primary);
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.get-started p {
+  color: var(--text-secondary);
+  max-width: 700px;
+  margin: 0 auto 15px;
+  line-height: 1.6;
+}
+
+.highlight-text {
+  font-weight: 500;
+  color: var(--primary);
+  padding: 10px 0;
+  font-size: 1.1rem;
+}
+
+/* Institutional Footer */
+.institutional-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  border-top: 1px solid var(--border-color);
+  margin-top: 30px;
+}
+
+.institutional-logo {
+  height: 60px;
+  width: auto;
+}
+
+.institution-info {
+  text-align: right;
+}
+
+.institution-info p {
+  margin: 5px 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2rem;
   }
   
-  .home-page h1 {
-    color: #333;
-    border-bottom: 2px solid #4facfe;
-    padding-bottom: 15px;
-    margin-bottom: 30px;
-  }
-  
-  .intro-content {
-    line-height: 1.6;
+  .hero-subtitle {
     font-size: 1.1rem;
   }
   
+  .simulator-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .intro-content {
+    grid-template-columns: 1fr;
+  }
+  
   .get-started {
-    margin-top: 40px;
-    padding: 20px;
-    background-color: #f5f7fa;
-    border-radius: 5px;
+    padding: 30px 20px;
+  }
+  
+  .institutional-footer {
+    flex-direction: column;
     text-align: center;
   }
+  
+  .institutional-logo {
+    margin: 0 0 20px 0;
+  }
+  
+  .institution-info {
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-page {
+    padding: 20px 15px;
+  }
+  
+  .hero-section {
+    padding: 40px 20px;
+  }
+  
+  .hero-title {
+    font-size: 1.75rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+  
+  .intro-card, .simulator-card {
+    padding: 20px;
+  }
+  
+  .section-title {
+    font-size: 1.6rem;
+  }
+}

@@ -162,7 +162,10 @@ function Footer() {
           <img src="/IITK_logo.png" alt="IITK's Logo" height="40" />
         </div>
         <div className="footer-text">
+          <p>Department of Chemical Engineering</p>
+          <p>Indian Institute of Technology Kanpur</p>
           <p>CHE213 - Mass Transfer</p>
+          <p>&copy; 2025</p>
         </div>
       </div>
     </footer>
