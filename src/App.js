@@ -4,9 +4,10 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import HomePage from './components/HomePage';
 import SimulatorIntro from './components/SimulatorIntro';
 import EquimolarDiffusionSimulator from './components/simulators/EquimolarDiffusionSimulator';
-import DistillationColumnSimulator from './components/simulators/DistillationColumnSimulator';
+import McCabeThieleCounterCurrent from './components/simulators/McCabeThieleCounterCurrent';
 import PackedBedSimulator from './components/simulators/PackedBedSimulator';
 import StagnantFilmDiffusion from './components/simulators/StagnantFilmDiffusion';
+import CrosscurrentStageSimulator from './components/simulators/CrosscurrentStageSimulator';
 import './App.css';
 
 // Data for the simulators
@@ -24,10 +25,10 @@ const simulators = [
     path: '/simulators/stagnant-film'
   },
   {
-    id: 'distillation-column',
-    title: 'Distillation Column Stages',
-    description: 'Calculate the number of stages in a distillation column using McCabe-Thiele method.',
-    path: '/simulators/distillation-column'
+    id: 'mccabe-thiele',
+    title: 'McCabe-Thiele Method Simulator',
+    description: 'Interactive visualization of the McCabe-Thiele method for distillation column design.',
+    path: '/simulators/mccabe-thiele'
   },
   {
     id: 'packed-bed',
@@ -35,7 +36,12 @@ const simulators = [
     description: 'Simulation of mass transfer and reaction in a packed bed reactor.',
     path: '/simulators/packed-bed'
   },
-  // Other simulators would be added here
+  {
+    id: 'crosscurrent-stage',
+    title: 'Crosscurrent Stage Simulator',
+    description: 'Interactive visualization of gas-to-liquid mass transfer in crosscurrent operations. Features include equilibrium curve plotting, operating line calculations, and stage-by-stage analysis. Users can adjust flow rates (Ls, Gs), concentrations (X₀, Y₀), and define custom equilibrium relationships.',
+    path: '/simulators/crosscurrent-stage'
+  }
 ];
 
 function App() {
@@ -69,15 +75,15 @@ function App() {
               element={<StagnantFilmDiffusion />} 
             />
             <Route 
-              path="/simulators/distillation-column" 
+              path="/simulators/mccabe-thiele" 
               element={<SimulatorIntro 
                 simulator={simulators[2]} 
-                simulatorPath="/simulators/distillation-column/simulate"
+                simulatorPath="/simulators/mccabe-thiele/simulate"
               />} 
             />
             <Route 
-              path="/simulators/distillation-column/simulate" 
-              element={<DistillationColumnSimulator />} 
+              path="/simulators/mccabe-thiele/simulate" 
+              element={<McCabeThieleCounterCurrent />} 
             />
             <Route 
               path="/simulators/packed-bed" 
@@ -90,7 +96,17 @@ function App() {
               path="/simulators/packed-bed/simulate" 
               element={<PackedBedSimulator />} 
             />
-            {/* Other routes would be added here */}
+            <Route 
+              path="/simulators/crosscurrent-stage" 
+              element={<SimulatorIntro 
+                simulator={simulators[4]} 
+                simulatorPath="/simulators/crosscurrent-stage/simulate"
+              />} 
+            />
+            <Route 
+              path="/simulators/crosscurrent-stage/simulate" 
+              element={<CrosscurrentStageSimulator />} 
+            />
           </Routes>
         </div>
       </div>

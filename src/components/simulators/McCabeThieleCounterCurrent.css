@@ -1,0 +1,334 @@
+/* Base styles for the simulator container */
+.simulator-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.simulator-container h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.simulation-layout {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+/* Controls panel styles */
+.controls-panel {
+  flex: 1;
+  min-width: 300px;
+  max-width: 400px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.controls-panel h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #333;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+}
+
+/* Parameter styles */
+.parameter {
+  margin-bottom: 15px;
+}
+
+.parameter label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #555;
+}
+
+.parameter input[type="range"] {
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.parameter input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+
+.parameter .value {
+  display: inline-block;
+  min-width: 40px;
+  text-align: right;
+  font-weight: bold;
+  color: #333;
+}
+
+.parameter-help {
+  font-size: 0.85em;
+  color: #666;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+.calculated-value {
+  font-weight: bold;
+  color: #333;
+}
+
+.display-options {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #ddd;
+}
+
+.display-options h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.display-options label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.error-message {
+  color: #d32f2f;
+  background-color: #ffebee;
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: 10px;
+  font-size: 0.9em;
+}
+
+/* Calculated values section */
+.calculated-values {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #ddd;
+}
+
+.calculated-values h4 {
+  margin-top: 0;
+  color: #333;
+}
+
+.result-card {
+  background-color: white;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.result-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.result-label {
+  font-weight: bold;
+  color: #555;
+}
+
+.result-value {
+  font-weight: bold;
+  color: #333;
+}
+
+/* Visualization panel styles */
+.visualization-panel {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.visualization-container {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-height: 500px;
+}
+
+.visualization-area {
+  width: 100%;
+  height: 100%;
+  min-height: 500px;
+}
+
+.visualization-description {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #ddd;
+}
+
+.visualization-description h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.visualization-description p {
+  margin-bottom: 10px;
+  line-height: 1.5;
+  color: #555;
+}
+
+/* McCabe-Thiele diagram specific styles */
+.mccabe-thiele-svg {
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.axis-line {
+  stroke: #333;
+  stroke-width: 1.5;
+}
+
+.axis-text {
+  font-size: 12px;
+  fill: #333;
+}
+
+.operating-line {
+  stroke: blue;
+  stroke-width: 2;
+}
+
+.equilibrium-line {
+  stroke: red;
+  stroke-width: 2;
+}
+
+.stage-line {
+  stroke: purple;
+  stroke-width: 2;
+  stroke-dasharray: 5, 5;
+}
+
+.stage-point {
+  fill: purple;
+  r: 4;
+}
+
+.stage-count {
+  font-size: 10px;
+  fill: #333;
+  text-anchor: middle;
+}
+
+/* Responsive styles */
+@media (max-width: 1200px) {
+  .simulation-layout {
+    flex-direction: column;
+  }
+  
+  .controls-panel {
+    max-width: 100%;
+  }
+  
+  .visualization-panel {
+    width: 100%;
+  }
+  
+  .visualization-container {
+    min-height: 400px;
+  }
+}
+
+@media (max-width: 768px) {
+  .simulation-layout {
+    flex-direction: column;
+  }
+  
+  .controls-panel {
+    max-width: 100%;
+  }
+  
+  .visualization-container {
+    min-height: 350px;
+  }
+  
+  .visualization-area {
+    min-height: 350px;
+  }
+  
+  .parameter {
+    margin-bottom: 10px;
+  }
+  
+  .visualization-description {
+    margin-top: 15px;
+  }
+  
+  .visualization-description p {
+    font-size: 0.9em;
+  }
+}
+
+@media (max-width: 480px) {
+  .visualization-container {
+    min-height: 300px;
+  }
+  
+  .controls-panel, .visualization-panel {
+    padding: 15px;
+  }
+  
+  .parameter label {
+    font-size: 0.9em;
+  }
+  
+  .result-value {
+    font-size: 0.9em;
+  }
+}
+
+/* Grid styles */
+.grid line {
+  stroke: #999;
+  stroke-width: 0.5;
+  stroke-opacity: 0.5;
+  stroke-dasharray: 3,3;
+}
+
+.grid path {
+  stroke-width: 0;
+}
+
+/* Stage lines */
+.stage-line {
+  stroke-width: 2;
+}
+
+.stage-line.horizontal {
+  stroke: green;
+}
+
+.stage-line.vertical {
+  stroke: purple;
+}
+
+.stage-point {
+  fill: none;
+  stroke: #333;
+  stroke-width: 1;
+  r: 4;
+} 

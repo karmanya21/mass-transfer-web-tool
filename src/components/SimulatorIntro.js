@@ -158,6 +158,95 @@ const SimulatorIntro = ({ simulator, simulatorPath }) => {
           </ul>
         </>
       );
+    } else if (id === 'mccabe-thiele') {
+      return (
+        <>
+          <p>
+            The McCabe-Thiele Method Simulator is a powerful educational tool for chemical engineering that visualizes counter-current mass transfer operations, particularly in absorption, stripping, and distillation processes.
+          </p>
+          <p>
+            <strong>Key Parameters:</strong>
+          </p>
+          <ul>
+            <li><strong>Equilibrium Function:</strong> Relationship between liquid and gas phase concentrations at equilibrium (y = f(x))</li>
+            <li><strong>Liquid Flow Rate (Ls):</strong> Rate of liquid phase flow through the column</li>
+            <li><strong>Gas Flow Rate (Gs):</strong> Rate of gas phase flow through the column</li>
+            <li><strong>Input/Output Concentrations:</strong> Liquid (x) and gas (y) phase concentrations at inlet and outlet</li>
+            <li><strong>Operating Line Slope (Ls/Gs):</strong> Determines the mass balance relationship between phases</li>
+          </ul>
+          <p>
+            The simulation visually demonstrates:
+          </p>
+          <ul>
+            <li>The equilibrium curve representing thermodynamic constraints</li>
+            <li>The operating line showing mass balance relationships</li>
+            <li>Step-by-step calculation of theoretical stages needed for separation</li>
+            <li>Mass transfer driving forces at each stage</li>
+          </ul>
+          <p>
+            This simulator helps students and professionals understand:
+          </p>
+          <ul>
+            <li>Graphical determination of required separation stages</li>
+            <li>Effect of flow rates on separation efficiency</li>
+            <li>Impact of equilibrium relationships on process design</li>
+            <li>Trade-offs between number of stages and operating conditions</li>
+            <li>Fundamental concepts of counter-current mass transfer operations</li>
+          </ul>
+          <p>
+            The interactive nature of the simulator allows users to immediately see how changing parameters affects the separation process, making it an invaluable tool for process design and optimization in chemical engineering education and practice.
+          </p>
+        </>
+      );
+    } else if (id === 'crosscurrent-stage') {
+      return (
+        <>
+          <p>
+            The Crosscurrent Stage Simulator is a powerful tool for understanding gas-to-liquid mass transfer operations
+            in crosscurrent flow arrangements. In this configuration, fresh solvent is fed to each stage while the gas
+            phase flows through the stages in sequence, making it distinct from countercurrent operations.
+          </p>
+          <p>
+            <strong>Key Parameters:</strong>
+          </p>
+          <ul>
+            <li><strong>Equilibrium Function y = f(x):</strong> Defines the relationship between gas (y) and liquid (x) phase concentrations at equilibrium</li>
+            <li><strong>Liquid Flow Rate (Ls):</strong> Fresh solvent flow rate to each stage</li>
+            <li><strong>Gas Flow Rate (Gs):</strong> Gas phase flow rate through the stages</li>
+            <li><strong>Operating Point (X₀, Y₀):</strong> Initial concentrations in liquid and gas phases</li>
+            <li><strong>Number of Stages:</strong> Number of theoretical equilibrium stages</li>
+          </ul>
+          <p>
+            The simulation visualizes:
+          </p>
+          <ul>
+            <li>Equilibrium curve (blue line) showing the thermodynamic relationship between phases</li>
+            <li>Operating lines (green) for each stage with slope = -Ls/Gs</li>
+            <li>Stage points (P) showing conditions at each stage</li>
+            <li>Equilibrium points (Q) where gas reaches equilibrium with liquid</li>
+          </ul>
+          <p>
+            This simulator helps understand:
+          </p>
+          <ul>
+            <li>Mass transfer driving forces at each stage</li>
+            <li>Effect of flow rates on separation efficiency</li>
+            <li>Impact of equilibrium relationships on process design</li>
+            <li>Trade-offs between number of stages and operating conditions</li>
+            <li>Differences between crosscurrent and countercurrent operations</li>
+          </ul>
+          <p>
+            The interactive nature allows users to:
+          </p>
+          <ul>
+            <li>Define custom equilibrium relationships using mathematical expressions</li>
+            <li>Adjust flow rates to see their impact on operating line slopes</li>
+            <li>Modify the operating point to explore different separation scenarios</li>
+            <li>Visualize stage-by-stage mass transfer in real-time</li>
+            <li>Analyze the number of stages required for a given separation</li>
+          </ul>
+        </>
+      );
     }
     // Add cases for other simulators here
     return <p>Information about this simulator will be added soon.</p>;

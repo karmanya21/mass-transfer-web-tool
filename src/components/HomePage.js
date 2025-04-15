@@ -17,9 +17,11 @@ const HomePage = () => {
           absorption, extraction, and membrane separation.
         </p>
         <p>
-          This simulator provides interactive visualizations for eight key mass transfer phenomena,
-          allowing users to adjust parameters and observe real-time effects on concentration profiles,
-          fluxes, and other relevant variables.
+          This simulator provides interactive visualizations for various mass transfer phenomena,
+          including equimolar counter diffusion, stagnant film diffusion, McCabe-Thiele method,
+          packed bed reactors, and crosscurrent stage operations. Each simulation allows users to 
+          adjust parameters and observe real-time effects on concentration profiles, fluxes, and other 
+          relevant variables.
         </p>
         <div className="get-started">
           <p>Select a simulation from the sidebar to begin exploring mass transfer concepts.</p>
