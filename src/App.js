@@ -8,6 +8,7 @@ import McCabeThieleCounterCurrent from './components/simulators/McCabeThieleCoun
 import PackedBedSimulator from './components/simulators/PackedBedSimulator';
 import StagnantFilmDiffusion from './components/simulators/StagnantFilmDiffusion';
 import CrosscurrentStageSimulator from './components/simulators/CrosscurrentStageSimulator';
+import DistillationColumnSimulator from './components/simulators/DistillationColumnSimulator';
 import './App.css';
 
 // Data for the simulators
@@ -41,6 +42,12 @@ const simulators = [
     title: 'Crosscurrent Stage Simulator',
     description: 'Interactive visualization of gas-to-liquid mass transfer in crosscurrent operations. Features include equilibrium curve plotting, operating line calculations, and stage-by-stage analysis. Users can adjust flow rates (Ls, Gs), concentrations (X₀, Y₀), and define custom equilibrium relationships.',
     path: '/simulators/crosscurrent-stage'
+  },
+  {
+    id: 'distillation-column',
+    title: 'Distillation Column Simulator',
+    description: 'Interactive simulation of a distillation column with McCabe-Thiele analysis for multi-component separation.',
+    path: '/simulators/distillation-column'
   }
 ];
 
@@ -106,6 +113,17 @@ function App() {
             <Route 
               path="/simulators/crosscurrent-stage/simulate" 
               element={<CrosscurrentStageSimulator />} 
+            />
+            <Route 
+              path="/simulators/distillation-column" 
+              element={<SimulatorIntro 
+                simulator={simulators[5]} 
+                simulatorPath="/simulators/distillation-column/simulate"
+              />} 
+            />
+            <Route 
+              path="/simulators/distillation-column/simulate" 
+              element={<DistillationColumnSimulator />} 
             />
           </Routes>
         </div>
