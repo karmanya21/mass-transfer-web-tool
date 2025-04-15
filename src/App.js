@@ -165,7 +165,8 @@ function Footer() {
           <p>Department of Chemical Engineering</p>
           <p>Indian Institute of Technology Kanpur</p>
           <p>CHE213 - Mass Transfer</p>
-          <p>&copy; 2025</p>
+          <p className="developers">Developed by: <span>Shantanu</span> · <span>Shruti</span> · <span>Karmanya</span> · <span>Anisha</span></p>
+          <p>2025</p>
         </div>
       </div>
     </footer>
